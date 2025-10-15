@@ -50,6 +50,8 @@ interface InvoiceData {
   
   // Signature
   signature?: string;
+  signatureName?: string;
+  signaturePhone?: string;
   
   // Footer
   companyPhone?: string;
@@ -79,10 +81,15 @@ const InvoiceForm: React.FC = () => {
     
     // Terms and Payment
     terms: '1. Terms of payment : Through Bank\n2. Payment Method : 50% Advance at time of order and rest 50% before delivery.\n3. Delivery Time : Normally 15 working days from approval\n4. Delivery Service : Free delivery within Dhaka City. The charge will be applicable for the delivery outside Dhaka.\n5. TAX : The above offer excluded all kinds of Govt. Duties, AIT, Vat &',
-    bankDetails: 'Bank: [Bank Name]\nAccount: [Account Number]\nRouting: [Routing Number]',
+    bankDetails: 'Islami Bank Bangladesh PLC',
+    accountNumber: '20504480100091802',
+    routingNumber: '125193250',
+    additionalBankInfo: 'Account Name: FR Cosmetics Ltd.\nBranch: Nangalkot Branch\nAddress: Nangalkot, Cumilla, Bangladesh\nSWIFT: IBBLBDDH',
     
     // Signature
     signature: '/signature.png',
+    signatureName: 'Md Khorshed Alam',
+    signaturePhone: 'frcosmetics25@gmail.com',
     
     // Footer
     companyPhone: '01632211485, 01783321436, 01891598055',
@@ -429,7 +436,7 @@ const InvoiceForm: React.FC = () => {
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
               <Box sx={{ textAlign: 'right' }}>
                 <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333' }}>
-                  Subtotal: ৳{calculateGrandTotal().toFixed(2)}
+                  Subtotal: TK {calculateGrandTotal().toFixed(2)}
                 </Typography>
               </Box>
             </Box>
@@ -438,7 +445,7 @@ const InvoiceForm: React.FC = () => {
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
               <Box sx={{ textAlign: 'right' }}>
                 <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#e74c3c' }}>
-                  Grand Total: ৳{calculateGrandTotal().toFixed(2)}
+                  Grand Total: TK {calculateGrandTotal().toFixed(2)}
                 </Typography>
               </Box>
             </Box>
@@ -559,7 +566,7 @@ const InvoiceForm: React.FC = () => {
                     <img
                       src={invoiceData.signature}
                       alt="Signature Preview"
-                      style={{ width: '500px', height: 'auto', border: '1px solid #eee' }}
+                      style={{ width: '150px', height: 'auto', border: '1px solid #eee' }}
                     />
                   </Box>
                 )}
@@ -568,6 +575,26 @@ const InvoiceForm: React.FC = () => {
                 Upload a PNG signature image with transparent background
               </Typography>
             </Box>
+            
+            {/* Signature Name */}
+            <TextField
+              fullWidth
+              label="Signature Name"
+              value={invoiceData.signatureName || ''}
+              onChange={(e) => handleInputChange('signatureName', e.target.value)}
+              placeholder="Enter signature holder's name"
+              helperText="Name of the person signing the invoice"
+            />
+            
+            {/* Signature Email */}
+            <TextField
+              fullWidth
+              label="Signature Email"
+              value={invoiceData.signaturePhone || ''}
+              onChange={(e) => handleInputChange('signaturePhone', e.target.value)}
+              placeholder="Enter signature holder's email"
+              helperText="Email address of the person signing the invoice"
+            />
           </Box>
         </Box>
 
