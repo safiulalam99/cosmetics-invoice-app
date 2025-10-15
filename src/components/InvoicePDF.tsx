@@ -70,9 +70,9 @@ const styles = StyleSheet.create({
   },
   
   companyLogo: {
-    width: 60,
-    height: 50,
-    marginBottom: 8,
+    width: 250,
+    height: 'auto',
+    marginBottom: 15,
   },
   
   companyName: {
@@ -340,19 +340,19 @@ const styles = StyleSheet.create({
   
   signatureBox: {
     alignItems: 'center',
-    minHeight: 60,
+    minHeight: 120,
   },
   
   signatureImage: {
-    width: 100,
-    height: 50,
-    marginBottom: 5,
+    width: 280,
+    height: 'auto',
+    marginBottom: 12,
   },
   
   signatureLine: {
     borderTop: '1 solid #333333',
-    width: 120,
-    marginTop: 3,
+    width: 280,
+    marginTop: 5,
   },
   
   signatureLabel: {
@@ -483,8 +483,8 @@ const InvoicePDF: React.FC<{ invoiceData: InvoiceData }> = ({ invoiceData }) => 
                 <View key={item.id} style={styles.itemsTableRow}>
                   <Text style={styles.itemsTableCell}>{item.description}</Text>
                   <Text style={styles.itemsTableCellCenter}>{item.quantity}</Text>
-                  <Text style={styles.itemsTableCellRight}>${item.unitPrice.toFixed(2)}</Text>
-                  <Text style={styles.itemsTableCellRight}>${item.total.toFixed(2)}</Text>
+                  <Text style={styles.itemsTableCellRight}>৳{item.unitPrice.toFixed(2)}</Text>
+                  <Text style={styles.itemsTableCellRight}>৳{item.total.toFixed(2)}</Text>
                 </View>
               ))}
             </View>
@@ -492,14 +492,14 @@ const InvoicePDF: React.FC<{ invoiceData: InvoiceData }> = ({ invoiceData }) => 
             {/* Subtotal */}
             <View style={styles.subtotalSection}>
               <Text style={styles.subtotalLabel}>
-                Subtotal: ${invoiceData.items.reduce((total, item) => total + item.total, 0).toFixed(2)}
+                Subtotal: ৳{invoiceData.items.reduce((total, item) => total + item.total, 0).toFixed(2)}
               </Text>
             </View>
             
             {/* Grand Total */}
             <View style={styles.grandTotalSection}>
               <Text style={styles.grandTotalLabel}>
-                Grand Total: ${invoiceData.items.reduce((total, item) => total + item.total, 0).toFixed(2)}
+                Grand Total: ৳{invoiceData.items.reduce((total, item) => total + item.total, 0).toFixed(2)}
               </Text>
             </View>
             
@@ -509,7 +509,7 @@ const InvoicePDF: React.FC<{ invoiceData: InvoiceData }> = ({ invoiceData }) => 
               <Text style={styles.amountInWordsValue}>
                 {(() => {
                   const grandTotal = invoiceData.items.reduce((total, item) => total + item.total, 0);
-                  return grandTotal > 0 ? `${numberToWords(grandTotal)} dollars only` : 'Zero dollars only';
+                  return grandTotal > 0 ? `${numberToWords(grandTotal)} taka only` : 'Zero taka only';
                 })()}
               </Text>
             </View>

@@ -61,7 +61,7 @@ const InvoiceForm: React.FC = () => {
   const [invoiceData, setInvoiceData] = useState<InvoiceData>({
     // Company Information
     companyName: 'FR Cosmetics Ltd.',
-    companyAddress: 'Dhatissor, Nangalkot, Cumilla, Bangladesh\nPhone: 01783321436, 01891598055',
+    companyAddress: 'Datiswar, Nangalkot, Cumilla, Bangladesh\nPhone: 01632211485, 01783321436, 01891598055',
     companyLogo: '/company_logo.png',
     
     // Invoice Meta
@@ -70,8 +70,8 @@ const InvoiceForm: React.FC = () => {
     dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 30 days from now
     
     // Buyer Information
-    buyerCompany: '',
-    buyerAddress: '',
+    buyerCompany: 'Army Pharma Ltd.',
+    buyerAddress: 'BMTF Ltd. Chot, Shimultoli, Gazipur Sadar,\nPS: Gazipur-1700, Bangladesh',
     buyerContact: '',
     
     // Items
@@ -85,8 +85,8 @@ const InvoiceForm: React.FC = () => {
     signature: '/signature.png',
     
     // Footer
-    companyPhone: '01783321436, 01891598055',
-    companyFooterAddress: 'Dhatiaeso, Nangalkot, Cumilla, Bangladesh',
+    companyPhone: '01632211485, 01783321436, 01891598055',
+    companyFooterAddress: 'Datiswar, Nangalkot, Cumilla, Bangladesh',
   });
 
   const [isGenerating, setIsGenerating] = useState(false);
@@ -225,7 +225,7 @@ const InvoiceForm: React.FC = () => {
                     <img
                       src={invoiceData.companyLogo}
                       alt="Company Logo Preview"
-                      style={{ maxWidth: '200px', maxHeight: '100px' }}
+                      style={{ width: '500px', height: 'auto' }}
                     />
                   </Box>
                 )}
@@ -425,23 +425,32 @@ const InvoiceForm: React.FC = () => {
               Add Item
             </Button>
 
-            {/* Grand Total */}
+            {/* Subtotal */}
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
               <Box sx={{ textAlign: 'right' }}>
-                <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#e74c3c' }}>
-                  Grand Total: ${calculateGrandTotal().toFixed(2)}
+                <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333' }}>
+                  Subtotal: ৳{calculateGrandTotal().toFixed(2)}
+                </Typography>
+              </Box>
+            </Box>
+            
+            {/* Grand Total */}
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
+              <Box sx={{ textAlign: 'right' }}>
+                <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#e74c3c' }}>
+                  Grand Total: ৳{calculateGrandTotal().toFixed(2)}
                 </Typography>
               </Box>
             </Box>
             
             {/* Amount in Words */}
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
               <Box sx={{ textAlign: 'right', p: 2, backgroundColor: '#f0f8ff', borderRadius: 1, border: '1px solid #e3f2fd', maxWidth: '400px' }}>
                 <Typography variant="body2" sx={{ color: '#666', marginBottom: 1 }}>
                   Amount in Words:
                 </Typography>
                 <Typography variant="body1" sx={{ fontWeight: 'medium', fontStyle: 'italic' }}>
-                  {calculateGrandTotal() > 0 ? `${numberToWords(calculateGrandTotal())} dollars only` : 'Zero dollars only'}
+                  {calculateGrandTotal() > 0 ? `${numberToWords(calculateGrandTotal())} taka only` : 'Zero taka only'}
                 </Typography>
               </Box>
             </Box>
@@ -550,7 +559,7 @@ const InvoiceForm: React.FC = () => {
                     <img
                       src={invoiceData.signature}
                       alt="Signature Preview"
-                      style={{ maxWidth: '200px', maxHeight: '100px', border: '1px solid #eee' }}
+                      style={{ width: '500px', height: 'auto', border: '1px solid #eee' }}
                     />
                   </Box>
                 )}

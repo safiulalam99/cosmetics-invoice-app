@@ -61,9 +61,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 15,
-    paddingBottom: 10,
-    borderBottom: '1 solid #e74c3c',
+    marginBottom: 25,
+    paddingBottom: 15,
+    borderBottom: '2 solid #e74c3c',
   },
   
   companyInfo: {
@@ -71,22 +71,22 @@ const styles = StyleSheet.create({
   },
   
   companyLogo: {
-    width: 50,
-    height: 40,
-    marginBottom: 5,
+    width: 250,
+    height: 'auto',
+    marginBottom: 15,
   },
   
   companyName: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#e74c3c',
-    marginBottom: 3,
+    marginBottom: 5,
   },
   
   companyAddress: {
-    fontSize: 9,
+    fontSize: 10,
     color: '#666666',
-    lineHeight: 1.2,
+    lineHeight: 1.3,
   },
   
   invoiceInfo: {
@@ -94,23 +94,23 @@ const styles = StyleSheet.create({
   },
   
   invoiceTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#333333',
-    marginBottom: 5,
+    marginBottom: 8,
   },
   
   invoiceMeta: {
-    fontSize: 9,
+    fontSize: 10,
     color: '#666666',
     textAlign: 'right',
   },
   
   invoiceNumber: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: 'bold',
     color: '#e74c3c',
-    marginTop: 2,
+    marginTop: 3,
   },
   
   // Content Section
@@ -120,43 +120,45 @@ const styles = StyleSheet.create({
   
   // Buyer Details Section
   buyerSection: {
-    marginBottom: 10,
+    marginBottom: 20,
   },
   
   buyerTitle: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: 'bold',
     color: '#e74c3c',
-    marginBottom: 3,
+    marginBottom: 8,
   },
   
   buyerInfo: {
-    padding: 5,
+    padding: 10,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 5,
   },
   
   buyerCompany: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: 'bold',
     color: '#333333',
-    marginBottom: 2,
+    marginBottom: 4,
   },
   
   buyerAddress: {
-    fontSize: 8,
+    fontSize: 10,
     color: '#666666',
-    lineHeight: 1.2,
-    marginBottom: 2,
+    lineHeight: 1.3,
+    marginBottom: 4,
   },
   
   buyerContact: {
-    fontSize: 8,
+    fontSize: 10,
     color: '#666666',
     fontStyle: 'italic',
   },
   
   // Items Table Section
   itemsSection: {
-    marginBottom: 10,
+    marginBottom: 20,
   },
   
   itemsTable: {
@@ -165,21 +167,21 @@ const styles = StyleSheet.create({
   
   itemsTableRow: {
     flexDirection: 'row',
-    borderBottom: '0.5 solid #ddd',
-    paddingVertical: 2,
+    borderBottom: '1 solid #ddd',
+    paddingVertical: 6,
   },
   
   itemsTableHeaderRow: {
     flexDirection: 'row',
     backgroundColor: '#f5f5f5',
-    borderBottom: '1 solid #ddd',
-    paddingVertical: 3,
+    borderBottom: '2 solid #ddd',
+    paddingVertical: 8,
   },
   
   itemsTableHeaderCell: {
     flex: 3,
-    paddingHorizontal: 3,
-    fontSize: 8,
+    paddingHorizontal: 8,
+    fontSize: 10,
     fontWeight: 'bold',
     color: '#333333',
     textAlign: 'left',
@@ -187,8 +189,8 @@ const styles = StyleSheet.create({
   
   itemsTableHeaderCellCenter: {
     flex: 1,
-    paddingHorizontal: 3,
-    fontSize: 8,
+    paddingHorizontal: 8,
+    fontSize: 10,
     fontWeight: 'bold',
     color: '#333333',
     textAlign: 'center',
@@ -196,8 +198,8 @@ const styles = StyleSheet.create({
   
   itemsTableHeaderCellRight: {
     flex: 1,
-    paddingHorizontal: 3,
-    fontSize: 8,
+    paddingHorizontal: 8,
+    fontSize: 10,
     fontWeight: 'bold',
     color: '#333333',
     textAlign: 'right',
@@ -205,24 +207,36 @@ const styles = StyleSheet.create({
   
   itemsTableCell: {
     flex: 3,
-    paddingHorizontal: 3,
-    fontSize: 8,
+    paddingHorizontal: 8,
+    fontSize: 10,
     color: '#333333',
     textAlign: 'left',
   },
   
   itemsTableCellCenter: {
     flex: 1,
-    paddingHorizontal: 3,
-    fontSize: 8,
+    paddingHorizontal: 8,
+    fontSize: 10,
     color: '#333333',
     textAlign: 'center',
   },
   
   itemsTableCellRight: {
     flex: 1,
-    paddingHorizontal: 3,
-    fontSize: 8,
+    paddingHorizontal: 8,
+    fontSize: 10,
+    color: '#333333',
+    textAlign: 'right',
+  },
+  
+  subtotalSection: {
+    marginTop: 10,
+    alignItems: 'flex-end',
+  },
+  
+  subtotalLabel: {
+    fontSize: 11,
+    fontWeight: 'bold',
     color: '#333333',
     textAlign: 'right',
   },
@@ -233,7 +247,7 @@ const styles = StyleSheet.create({
   },
   
   grandTotalLabel: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: 'bold',
     color: '#e74c3c',
     textAlign: 'right',
@@ -241,59 +255,37 @@ const styles = StyleSheet.create({
   
   // Terms & Conditions Section
   termsSection: {
-    marginBottom: 8,
+    marginBottom: 15,
   },
   
   termsTitle: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: 'bold',
     color: '#e74c3c',
-    marginBottom: 3,
-  },
-  
-  termsContent: {
-    fontSize: 7,
-    color: '#333333',
-    lineHeight: 1.2,
-  },
-  
-  // Total Amount Section
-  totalAmountSection: {
     marginBottom: 8,
   },
   
-  totalAmountBox: {
-    padding: 5,
-    marginBottom: 3,
-  },
-  
-  totalAmountLabel: {
-    fontSize: 8,
-    fontWeight: 'bold',
+  termsContent: {
+    fontSize: 9,
     color: '#333333',
-    marginBottom: 2,
-  },
-  
-  totalAmountValue: {
-    fontSize: 10,
-    fontWeight: 'bold',
-    color: '#e74c3c',
-    textAlign: 'right',
+    lineHeight: 1.4,
   },
   
   amountInWordsBox: {
-    padding: 3,
-    border: '0.5 solid #e3f2fd',
+    padding: 8,
+    border: '1 solid #e3f2fd',
+    backgroundColor: '#f8f9fa',
+    marginTop: 10,
   },
   
   amountInWordsLabel: {
-    fontSize: 7,
+    fontSize: 9,
     color: '#666666',
-    marginBottom: 2,
+    marginBottom: 4,
   },
   
   amountInWordsValue: {
-    fontSize: 7,
+    fontSize: 9,
     fontWeight: 'medium',
     fontStyle: 'italic',
     color: '#333333',
@@ -301,72 +293,74 @@ const styles = StyleSheet.create({
   
   // Bank Details Section
   bankDetailsSection: {
-    marginBottom: 8,
+    marginBottom: 15,
   },
   
   bankDetailsTitle: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: 'bold',
     color: '#e74c3c',
-    marginBottom: 3,
+    marginBottom: 8,
   },
   
   bankDetailsContent: {
-    padding: 3,
+    padding: 8,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 5,
   },
   
   bankDetailsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 2,
+    marginBottom: 4,
   },
   
   bankDetailsLabel: {
-    fontSize: 7,
+    fontSize: 9,
     fontWeight: 'bold',
     color: '#333333',
     flex: 1,
   },
   
   bankDetailsValue: {
-    fontSize: 7,
+    fontSize: 9,
     color: '#333333',
     flex: 2,
     textAlign: 'right',
   },
   
   bankDetailsFullRow: {
-    marginBottom: 2,
+    marginBottom: 4,
   },
   
   // Signature Section
   signatureSection: {
-    marginBottom: 8,
+    marginBottom: 15,
     alignItems: 'flex-end',
   },
   
   signatureBox: {
     alignItems: 'center',
-    minHeight: 40,
+    minHeight: 120,
   },
   
   signatureImage: {
-    width: 80,
-    height: 40,
-    marginBottom: 3,
+    width: 280,
+    height: 'auto',
+    marginBottom: 12,
   },
   
   signatureLine: {
-    borderTop: '0.5 solid #333333',
-    width: 100,
-    marginTop: 2,
+    borderTop: '1 solid #333333',
+    width: 280,
+    marginTop: 5,
   },
   
   signatureLabel: {
-    fontSize: 7,
+    fontSize: 9,
     color: '#666666',
     textAlign: 'center',
-    marginTop: 2,
+    marginTop: 3,
   },
   
   // Footer Section
@@ -494,6 +488,13 @@ const PDFDocument: React.FC<{ invoiceData: InvoiceData }> = ({ invoiceData }) =>
                   <Text style={styles.itemsTableCellRight}>${item.total.toFixed(2)}</Text>
                 </View>
               ))}
+            </View>
+            
+            {/* Subtotal */}
+            <View style={styles.subtotalSection}>
+              <Text style={styles.subtotalLabel}>
+                Subtotal: ${invoiceData.items.reduce((total, item) => total + item.total, 0).toFixed(2)}
+              </Text>
             </View>
             
             {/* Grand Total */}
