@@ -7,8 +7,10 @@ import {
   Box,
   Divider,
   CircularProgress,
+  Collapse,
+  IconButton,
 } from '@mui/material';
-import { Preview, PictureAsPdf, AddAPhoto } from '@mui/icons-material';
+import { Preview, PictureAsPdf, AddAPhoto, ExpandMore, ExpandLess } from '@mui/icons-material';
 import { pdf } from '@react-pdf/renderer';
 import InvoicePDF from './InvoicePDF';
 import PDFPreview from './PDFPreview';
@@ -116,6 +118,11 @@ const InvoiceForm: React.FC = () => {
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [previewMode, setPreviewMode] = useState(false);
+  
+  // Collapsible sections state
+  const [companyInfoExpanded, setCompanyInfoExpanded] = useState(false);
+  const [bankDetailsExpanded, setBankDetailsExpanded] = useState(false);
+  const [footerInfoExpanded, setFooterInfoExpanded] = useState(false);
 
   const handleInputChange = (field: keyof InvoiceData, value: any) => {
     setInvoiceData(prev => ({ ...prev, [field]: value }));
@@ -230,11 +237,20 @@ const InvoiceForm: React.FC = () => {
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
         {/* Header Section - Company Information */}
         <Box>
-          <Typography variant="h5" gutterBottom sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold' }}>
-            Company Information
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Typography variant="h5" gutterBottom sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold', mb: 0 }}>
+              Company Information
+            </Typography>
+            <IconButton
+              onClick={() => setCompanyInfoExpanded(!companyInfoExpanded)}
+              sx={{ color: 'rgb(26, 68, 160)' }}
+            >
+              {companyInfoExpanded ? <ExpandLess /> : <ExpandMore />}
+            </IconButton>
+          </Box>
           
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Collapse in={companyInfoExpanded}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {/* Company Logo Upload */}
             <Box>
               <Typography variant="subtitle1" gutterBottom>
@@ -284,7 +300,8 @@ const InvoiceForm: React.FC = () => {
               onChange={(e) => handleInputChange('companyAddress', e.target.value)}
               required
             />
-          </Box>
+            </Box>
+          </Collapse>
         </Box>
 
         <Divider />
@@ -524,11 +541,20 @@ const InvoiceForm: React.FC = () => {
 
         {/* Signature and Bank Details Section - Side by Side */}
         <Box>
-          <Typography variant="h5" gutterBottom sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold' }}>
-            Signature & Bank Details
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Typography variant="h5" gutterBottom sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold', mb: 0 }}>
+              Signature & Bank Details
+            </Typography>
+            <IconButton
+              onClick={() => setBankDetailsExpanded(!bankDetailsExpanded)}
+              sx={{ color: 'rgb(26, 68, 160)' }}
+            >
+              {bankDetailsExpanded ? <ExpandLess /> : <ExpandMore />}
+            </IconButton>
+          </Box>
 
-          <Box sx={{ display: 'flex', gap: 3 }}>
+          <Collapse in={bankDetailsExpanded}>
+            <Box sx={{ display: 'flex', gap: 3 }}>
             {/* Left Side - Signature Section */}
             <Box sx={{ flex: 1 }}>
               <Typography variant="h6" gutterBottom sx={{ color: '#666' }}>
@@ -636,18 +662,28 @@ const InvoiceForm: React.FC = () => {
                 />
               </Box>
             </Box>
-          </Box>
+            </Box>
+          </Collapse>
         </Box>
 
         <Divider />
 
         {/* Footer Section */}
         <Box>
-          <Typography variant="h5" gutterBottom sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold' }}>
-            Footer Information
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Typography variant="h5" gutterBottom sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold', mb: 0 }}>
+              Footer Information
+            </Typography>
+            <IconButton
+              onClick={() => setFooterInfoExpanded(!footerInfoExpanded)}
+              sx={{ color: 'rgb(26, 68, 160)' }}
+            >
+              {footerInfoExpanded ? <ExpandLess /> : <ExpandMore />}
+            </IconButton>
+          </Box>
           
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Collapse in={footerInfoExpanded}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
               fullWidth
               label="Company Phone Numbers"
@@ -678,7 +714,8 @@ const InvoiceForm: React.FC = () => {
               placeholder="Website, email, or other contact information"
               helperText="Optional: Add website, email, or other contact details"
             />
-          </Box>
+            </Box>
+          </Collapse>
         </Box>
 
         <Divider />

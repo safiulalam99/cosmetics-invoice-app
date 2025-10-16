@@ -558,7 +558,7 @@ const PDFDocument: React.FC<{ invoiceData: InvoiceData }> = ({ invoiceData }) =>
             <Text style={styles.invoiceTitle}>INVOICE</Text>
             <View style={styles.invoiceMeta}>
               <Text>Date: {invoiceData.invoiceDate}</Text>
-              <Text style={styles.invoiceNumber}>#{invoiceData.invoiceNumber}</Text>
+              <Text style={styles.invoiceNumber}>{invoiceData.invoiceNumber}</Text>
             </View>
           </View>
         </View>
