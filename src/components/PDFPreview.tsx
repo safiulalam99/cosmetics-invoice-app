@@ -428,13 +428,13 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: 60,
+    height: 45,
     backgroundColor: '#2a2a2a',
   },
 
   footerContent: {
     flexDirection: 'row',
-    height: 50,
+    height: 38,
     position: 'relative',
   },
 
@@ -504,15 +504,15 @@ const styles = StyleSheet.create({
   footerBlueBar: {
     width: '30%',
     backgroundColor: '#1a44a0',
-    height: 50,
+    height: 38,
   },
 
   footerContactInfo: {
     flex: 1,
     backgroundColor: '#2a2a2a',
     paddingLeft: 12,
-    paddingTop: 8,
-    height: 50,
+    paddingTop: 6,
+    height: 38,
     justifyContent: 'center',
   },
 
@@ -535,7 +535,7 @@ const styles = StyleSheet.create({
   },
 
   footerBottomBar: {
-    height: 10,
+    height: 7,
     backgroundColor: '#1a1a1a',
   },
   
@@ -636,11 +636,12 @@ const PDFDocument: React.FC<{ invoiceData: InvoiceData }> = ({ invoiceData }) =>
             <View style={styles.grandTotalSection}>
               {/* Amount in Words - Left Side */}
               <Text style={styles.amountInWordsValue}>
-                {(() => {
+                In words: {(() => {
                   const subtotal = invoiceData.items.reduce((total, item) => total + item.total, 0);
                   const vat = (subtotal * invoiceData.vatPercentage) / 100;
                   const grandTotal = subtotal + vat;
-                  return grandTotal > 0 ? `${numberToWords(grandTotal)} taka only` : 'Zero taka only';
+                  const words = grandTotal > 0 ? `${numberToWords(grandTotal)} taka only` : 'Zero taka only';
+                  return words.charAt(0).toUpperCase() + words.slice(1);
                 })()}
               </Text>
 
