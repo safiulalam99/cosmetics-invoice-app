@@ -28,7 +28,6 @@ function App() {
             FR Cosmetics Ltd.
           </Typography>
           <Typography variant="h5" component="h2" color="text.secondary">
-            Professional Invoice Generator
           </Typography>
         </Box>
         <InvoiceForm />
