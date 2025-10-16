@@ -229,21 +229,26 @@ const InvoiceForm: React.FC = () => {
   };
 
   return (
-    <Paper elevation={3} sx={{ p: 4 }}>
-      <Typography variant="h4" gutterBottom>
+    <Paper elevation={3} sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
+      <Typography variant="h4" gutterBottom sx={{ fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' } }}>
         Invoice Generator
       </Typography>
 
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, sm: 3 } }}>
         {/* Header Section - Company Information */}
         <Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="h5" gutterBottom sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold', mb: 0 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+            <Typography variant="h5" gutterBottom sx={{ 
+              color: 'rgb(26, 68, 160)', 
+              fontWeight: 'bold', 
+              mb: 0,
+              fontSize: { xs: '1.1rem', sm: '1.25rem', md: '1.5rem' }
+            }}>
               Company Information
             </Typography>
             <IconButton
               onClick={() => setCompanyInfoExpanded(!companyInfoExpanded)}
-              sx={{ color: 'rgb(26, 68, 160)' }}
+              sx={{ color: 'rgb(26, 68, 160)', size: { xs: 'small', sm: 'medium' } }}
             >
               {companyInfoExpanded ? <ExpandLess /> : <ExpandMore />}
             </IconButton>
@@ -274,7 +279,13 @@ const InvoiceForm: React.FC = () => {
                     <img
                       src={invoiceData.companyLogo}
                       alt="Company Logo Preview"
-                      style={{ width: '500px', height: 'auto' }}
+                      style={{ 
+                        width: '100%', 
+                        maxWidth: '500px', 
+                        height: 'auto',
+                        display: 'block',
+                        margin: '0 auto'
+                      }}
                     />
                   </Box>
                 )}
@@ -308,7 +319,11 @@ const InvoiceForm: React.FC = () => {
 
         {/* Buyer Details Section */}
         <Box>
-          <Typography variant="h5" gutterBottom sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold' }}>
+          <Typography variant="h5" gutterBottom sx={{ 
+            color: 'rgb(26, 68, 160)', 
+            fontWeight: 'bold',
+            fontSize: { xs: '1.1rem', sm: '1.25rem', md: '1.5rem' }
+          }}>
             Buyer Information
           </Typography>
           
@@ -350,7 +365,11 @@ const InvoiceForm: React.FC = () => {
 
         {/* Invoice Meta Information Section */}
         <Box>
-          <Typography variant="h5" gutterBottom sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold' }}>
+          <Typography variant="h5" gutterBottom sx={{ 
+            color: 'rgb(26, 68, 160)', 
+            fontWeight: 'bold',
+            fontSize: { xs: '1.1rem', sm: '1.25rem', md: '1.5rem' }
+          }}>
             Invoice Information
           </Typography>
           
@@ -365,8 +384,12 @@ const InvoiceForm: React.FC = () => {
               placeholder="e.g., INV-2024-001"
             />
 
-            {/* Invoice Date and Due Date in a row */}
-            <Box sx={{ display: 'flex', gap: 2 }}>
+            {/* Invoice Date and Due Date - responsive layout */}
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: { xs: 'column', sm: 'row' },
+              gap: 2 
+            }}>
               <TextField
                 fullWidth
                 label="Invoice Date"
@@ -393,42 +416,102 @@ const InvoiceForm: React.FC = () => {
 
         {/* Product/Items Section */}
         <Box>
-          <Typography variant="h5" gutterBottom sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold' }}>
+          <Typography variant="h5" gutterBottom sx={{ 
+            color: 'rgb(26, 68, 160)', 
+            fontWeight: 'bold',
+            fontSize: { xs: '1.1rem', sm: '1.25rem', md: '1.5rem' }
+          }}>
             Invoice Items
           </Typography>
           
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {/* Items Table Header */}
-            <Box sx={{ display: 'flex', gap: 1, fontWeight: 'bold', color: '#333' }}>
-              <Box sx={{ flex: 2, p: 1, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
+            {/* Items Table Header - Responsive */}
+            <Box sx={{ 
+              display: 'flex', 
+              gap: 1, 
+              fontWeight: 'bold', 
+              color: '#333',
+              overflowX: 'auto',
+              minWidth: { xs: '100%', sm: 'auto' }
+            }}>
+              <Box sx={{ 
+                flex: { xs: '0 0 40%', sm: 2 }, 
+                p: 1, 
+                backgroundColor: '#f5f5f5', 
+                borderRadius: 1,
+                minWidth: '120px'
+              }}>
                 Description
               </Box>
-              <Box sx={{ flex: 1, p: 1, backgroundColor: '#f5f5f5', borderRadius: 1, textAlign: 'center' }}>
-                Quantity
+              <Box sx={{ 
+                flex: { xs: '0 0 15%', sm: 1 }, 
+                p: 1, 
+                backgroundColor: '#f5f5f5', 
+                borderRadius: 1, 
+                textAlign: 'center',
+                minWidth: '60px'
+              }}>
+                Qty
               </Box>
-              <Box sx={{ flex: 1, p: 1, backgroundColor: '#f5f5f5', borderRadius: 1, textAlign: 'right' }}>
-                Unit Price (TK)
+              <Box sx={{ 
+                flex: { xs: '0 0 20%', sm: 1 }, 
+                p: 1, 
+                backgroundColor: '#f5f5f5', 
+                borderRadius: 1, 
+                textAlign: 'right',
+                minWidth: '80px'
+              }}>
+                <Box sx={{ display: { xs: 'none', sm: 'block' } }}>Unit Price (TK)</Box>
+                <Box sx={{ display: { xs: 'block', sm: 'none' } }}>Price</Box>
               </Box>
-              <Box sx={{ flex: 1, p: 1, backgroundColor: '#f5f5f5', borderRadius: 1, textAlign: 'right' }}>
-                Total (TK)
+              <Box sx={{ 
+                flex: { xs: '0 0 20%', sm: 1 }, 
+                p: 1, 
+                backgroundColor: '#f5f5f5', 
+                borderRadius: 1, 
+                textAlign: 'right',
+                minWidth: '80px'
+              }}>
+                <Box sx={{ display: { xs: 'none', sm: 'block' } }}>Total (TK)</Box>
+                <Box sx={{ display: { xs: 'block', sm: 'none' } }}>Total</Box>
               </Box>
-              <Box sx={{ flex: 0.5, p: 1, backgroundColor: '#f5f5f5', borderRadius: 1, textAlign: 'center' }}>
-                Action
+              <Box sx={{ 
+                flex: { xs: '0 0 5%', sm: 0.5 }, 
+                p: 1, 
+                backgroundColor: '#f5f5f5', 
+                borderRadius: 1, 
+                textAlign: 'center',
+                minWidth: '40px'
+              }}>
+                <Box sx={{ display: { xs: 'none', sm: 'block' } }}>Action</Box>
+                <Box sx={{ display: { xs: 'block', sm: 'none' } }}>X</Box>
               </Box>
             </Box>
 
-            {/* Items List */}
+            {/* Items List - Responsive */}
             {invoiceData.items.map((item, index) => (
-              <Box key={item.id} sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              <Box key={item.id} sx={{ 
+                display: 'flex', 
+                gap: 1, 
+                alignItems: 'center',
+                overflowX: 'auto',
+                minWidth: { xs: '100%', sm: 'auto' }
+              }}>
                 <TextField
-                  sx={{ flex: 2 }}
+                  sx={{ 
+                    flex: { xs: '0 0 40%', sm: 2 },
+                    minWidth: '120px'
+                  }}
                   placeholder="Item description"
                   value={item.description}
                   onChange={(e) => handleItemChange(index, 'description', e.target.value)}
                   size="small"
                 />
                 <TextField
-                  sx={{ flex: 1 }}
+                  sx={{ 
+                    flex: { xs: '0 0 15%', sm: 1 },
+                    minWidth: '60px'
+                  }}
                   type="number"
                   placeholder="Qty"
                   value={item.quantity}
@@ -437,7 +520,10 @@ const InvoiceForm: React.FC = () => {
                   inputProps={{ min: 0, step: 0.01 }}
                 />
                 <TextField
-                  sx={{ flex: 1 }}
+                  sx={{ 
+                    flex: { xs: '0 0 20%', sm: 1 },
+                    minWidth: '80px'
+                  }}
                   type="number"
                   placeholder="Price"
                   value={item.unitPrice}
@@ -446,7 +532,10 @@ const InvoiceForm: React.FC = () => {
                   inputProps={{ min: 0, step: 0.01 }}
                 />
                 <TextField
-                  sx={{ flex: 1 }}
+                  sx={{ 
+                    flex: { xs: '0 0 20%', sm: 1 },
+                    minWidth: '80px'
+                  }}
                   type="number"
                   placeholder="Total"
                   value={item.total.toFixed(2)}
@@ -459,9 +548,14 @@ const InvoiceForm: React.FC = () => {
                   size="small"
                   onClick={() => removeItem(index)}
                   disabled={invoiceData.items.length === 1}
-                  sx={{ flex: 0.5, minWidth: 'auto' }}
+                  sx={{ 
+                    flex: { xs: '0 0 5%', sm: 0.5 }, 
+                    minWidth: '40px',
+                    fontSize: { xs: '0.7rem', sm: '0.875rem' }
+                  }}
                 >
-                  Remove
+                  <Box sx={{ display: { xs: 'none', sm: 'block' } }}>Remove</Box>
+                  <Box sx={{ display: { xs: 'block', sm: 'none' } }}>X</Box>
                 </Button>
               </Box>
             ))}
@@ -519,7 +613,11 @@ const InvoiceForm: React.FC = () => {
 
         {/* Terms & Conditions Section */}
         <Box>
-          <Typography variant="h5" gutterBottom sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold' }}>
+          <Typography variant="h5" gutterBottom sx={{ 
+            color: 'rgb(26, 68, 160)', 
+            fontWeight: 'bold',
+            fontSize: { xs: '1.1rem', sm: '1.25rem', md: '1.5rem' }
+          }}>
             Terms & Conditions
           </Typography>
           
@@ -541,20 +639,29 @@ const InvoiceForm: React.FC = () => {
 
         {/* Signature and Bank Details Section - Side by Side */}
         <Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="h5" gutterBottom sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold', mb: 0 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+            <Typography variant="h5" gutterBottom sx={{ 
+              color: 'rgb(26, 68, 160)', 
+              fontWeight: 'bold', 
+              mb: 0,
+              fontSize: { xs: '1.1rem', sm: '1.25rem', md: '1.5rem' }
+            }}>
               Signature & Bank Details
             </Typography>
             <IconButton
               onClick={() => setBankDetailsExpanded(!bankDetailsExpanded)}
-              sx={{ color: 'rgb(26, 68, 160)' }}
+              sx={{ color: 'rgb(26, 68, 160)', size: { xs: 'small', sm: 'medium' } }}
             >
               {bankDetailsExpanded ? <ExpandLess /> : <ExpandMore />}
             </IconButton>
           </Box>
 
           <Collapse in={bankDetailsExpanded}>
-            <Box sx={{ display: 'flex', gap: 3 }}>
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: { xs: 'column', md: 'row' },
+              gap: { xs: 2, md: 3 } 
+            }}>
             {/* Left Side - Signature Section */}
             <Box sx={{ flex: 1 }}>
               <Typography variant="h6" gutterBottom sx={{ color: '#666' }}>
@@ -585,7 +692,14 @@ const InvoiceForm: React.FC = () => {
                         <img
                           src={invoiceData.signature}
                           alt="Signature Preview"
-                          style={{ width: '200px', height: 'auto', border: '1px solid #eee' }}
+                          style={{ 
+                            width: '100%', 
+                            maxWidth: '200px', 
+                            height: 'auto', 
+                            border: '1px solid #eee',
+                            display: 'block',
+                            margin: '0 auto'
+                          }}
                         />
                       </Box>
                     )}
@@ -670,13 +784,18 @@ const InvoiceForm: React.FC = () => {
 
         {/* Footer Section */}
         <Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="h5" gutterBottom sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold', mb: 0 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+            <Typography variant="h5" gutterBottom sx={{ 
+              color: 'rgb(26, 68, 160)', 
+              fontWeight: 'bold', 
+              mb: 0,
+              fontSize: { xs: '1.1rem', sm: '1.25rem', md: '1.5rem' }
+            }}>
               Footer Information
             </Typography>
             <IconButton
               onClick={() => setFooterInfoExpanded(!footerInfoExpanded)}
-              sx={{ color: 'rgb(26, 68, 160)' }}
+              sx={{ color: 'rgb(26, 68, 160)', size: { xs: 'small', sm: 'medium' } }}
             >
               {footerInfoExpanded ? <ExpandLess /> : <ExpandMore />}
             </IconButton>
@@ -722,12 +841,21 @@ const InvoiceForm: React.FC = () => {
 
         {/* Action Buttons */}
         <Box>
-          <Box display="flex" gap={2} justifyContent="center">
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: { xs: 'column', sm: 'row' },
+            gap: 2, 
+            justifyContent: 'center'
+          }}>
             <Button
               variant="outlined"
               startIcon={<Preview />}
               onClick={handlePreview}
               size="large"
+              sx={{ 
+                minWidth: { xs: '100%', sm: '200px' },
+                fontSize: { xs: '0.9rem', sm: '1rem' }
+              }}
             >
               {previewMode ? 'Hide Preview' : 'Preview Invoice'}
             </Button>
@@ -737,6 +865,10 @@ const InvoiceForm: React.FC = () => {
               onClick={handleGeneratePDF}
               disabled={isGenerating}
               size="large"
+              sx={{ 
+                minWidth: { xs: '100%', sm: '200px' },
+                fontSize: { xs: '0.9rem', sm: '1rem' }
+              }}
             >
               {isGenerating ? 'Generating...' : 'Generate PDF'}
             </Button>
