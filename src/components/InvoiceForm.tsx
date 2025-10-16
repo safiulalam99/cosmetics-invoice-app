@@ -27,32 +27,35 @@ interface InvoiceData {
   companyName: string;
   companyAddress: string;
   companyLogo?: string;
-  
+
   // Invoice Meta
   invoiceDate: string;
   invoiceNumber: string;
   dueDate: string;
-  
+
   // Buyer Information
   buyerCompany: string;
   buyerAddress: string;
   buyerContact: string;
-  
+
   // Items
   items: InvoiceItem[];
-  
+
+  // VAT
+  vatPercentage: number;
+
   // Terms and Payment
   terms: string;
   bankDetails: string;
   accountNumber?: string;
   routingNumber?: string;
   additionalBankInfo?: string;
-  
+
   // Signature
   signature?: string;
   signatureName?: string;
   signaturePhone?: string;
-  
+
   // Footer
   companyPhone?: string;
   companyFooterAddress?: string;
@@ -67,9 +70,21 @@ const InvoiceForm: React.FC = () => {
     companyLogo: '/company_logo.png',
     
     // Invoice Meta
-    invoiceDate: new Date().toISOString().split('T')[0],
+    invoiceDate: (() => {
+      const today = new Date();
+      const day = String(today.getDate()).padStart(2, '0');
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const year = today.getFullYear();
+      return `${day}-${month}-${year}`;
+    })(),
     invoiceNumber: `INV-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}${String(new Date().getDate()).padStart(2, '0')}-001`,
-    dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 30 days from now
+    dueDate: (() => {
+      const dueDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+      const day = String(dueDate.getDate()).padStart(2, '0');
+      const month = String(dueDate.getMonth() + 1).padStart(2, '0');
+      const year = dueDate.getFullYear();
+      return `${day}-${month}-${year}`;
+    })(), // 30 days from now
     
     // Buyer Information
     buyerCompany: 'Army Pharma Ltd.',
@@ -78,13 +93,16 @@ const InvoiceForm: React.FC = () => {
     
     // Items
     items: [{ id: '1', description: '', quantity: 0, unitPrice: 0, total: 0 }],
-    
+
+    // VAT
+    vatPercentage: 15,
+
     // Terms and Payment
     terms: '1. Terms of payment : Through Bank\n2. Payment Method : 50% Advance at time of order and rest 50% before delivery.\n3. Delivery Time : Normally 15 working days from approval\n4. Delivery Service : Free delivery within Dhaka City. The charge will be applicable for the delivery outside Dhaka.\n5. TAX : The above offer excluded all kinds of Govt. Duties, AIT, Vat &',
     bankDetails: 'Islami Bank Bangladesh PLC',
     accountNumber: '20504480100091802',
     routingNumber: '125193250',
-    additionalBankInfo: 'Account Name: FR Cosmetics Ltd.\nBranch: Nangalkot Branch\nAddress: Nangalkot, Cumilla, Bangladesh\nSWIFT: IBBLBDDH',
+    additionalBankInfo: 'Account Name: FR Cosmetics Ltd.\nSWIFT: IBBLBDDH\nBranch: Nangalkot Branch\nAddress: Nangalkot, Cumilla, Bangladesh',
     
     // Signature
     signature: '/signature.png',
@@ -143,8 +161,16 @@ const InvoiceForm: React.FC = () => {
     }
   };
 
-  const calculateGrandTotal = () => {
+  const calculateSubtotal = () => {
     return invoiceData.items.reduce((total, item) => total + item.total, 0);
+  };
+
+  const calculateVAT = () => {
+    return (calculateSubtotal() * invoiceData.vatPercentage) / 100;
+  };
+
+  const calculateGrandTotal = () => {
+    return calculateSubtotal() + calculateVAT();
   };
 
   const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -204,7 +230,7 @@ const InvoiceForm: React.FC = () => {
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
         {/* Header Section - Company Information */}
         <Box>
-          <Typography variant="h5" gutterBottom sx={{ color: '#e74c3c', fontWeight: 'bold' }}>
+          <Typography variant="h5" gutterBottom sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold' }}>
             Company Information
           </Typography>
           
@@ -265,7 +291,7 @@ const InvoiceForm: React.FC = () => {
 
         {/* Buyer Details Section */}
         <Box>
-          <Typography variant="h5" gutterBottom sx={{ color: '#e74c3c', fontWeight: 'bold' }}>
+          <Typography variant="h5" gutterBottom sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold' }}>
             Buyer Information
           </Typography>
           
@@ -307,7 +333,7 @@ const InvoiceForm: React.FC = () => {
 
         {/* Invoice Meta Information Section */}
         <Box>
-          <Typography variant="h5" gutterBottom sx={{ color: '#e74c3c', fontWeight: 'bold' }}>
+          <Typography variant="h5" gutterBottom sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold' }}>
             Invoice Information
           </Typography>
           
@@ -327,20 +353,20 @@ const InvoiceForm: React.FC = () => {
               <TextField
                 fullWidth
                 label="Invoice Date"
-                type="date"
                 value={invoiceData.invoiceDate}
                 onChange={(e) => handleInputChange('invoiceDate', e.target.value)}
                 required
-                InputLabelProps={{ shrink: true }}
+                placeholder="dd-mm-yyyy"
+                helperText="Format: dd-mm-yyyy (e.g., 15-12-2024)"
               />
               <TextField
                 fullWidth
                 label="Due Date"
-                type="date"
                 value={invoiceData.dueDate}
                 onChange={(e) => handleInputChange('dueDate', e.target.value)}
                 required
-                InputLabelProps={{ shrink: true }}
+                placeholder="dd-mm-yyyy"
+                helperText="Format: dd-mm-yyyy (e.g., 15-01-2025)"
               />
             </Box>
           </Box>
@@ -350,7 +376,7 @@ const InvoiceForm: React.FC = () => {
 
         {/* Product/Items Section */}
         <Box>
-          <Typography variant="h5" gutterBottom sx={{ color: '#e74c3c', fontWeight: 'bold' }}>
+          <Typography variant="h5" gutterBottom sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold' }}>
             Invoice Items
           </Typography>
           
@@ -364,10 +390,10 @@ const InvoiceForm: React.FC = () => {
                 Quantity
               </Box>
               <Box sx={{ flex: 1, p: 1, backgroundColor: '#f5f5f5', borderRadius: 1, textAlign: 'right' }}>
-                Unit Price
+                Unit Price (TK)
               </Box>
               <Box sx={{ flex: 1, p: 1, backgroundColor: '#f5f5f5', borderRadius: 1, textAlign: 'right' }}>
-                Total
+                Total (TK)
               </Box>
               <Box sx={{ flex: 0.5, p: 1, backgroundColor: '#f5f5f5', borderRadius: 1, textAlign: 'center' }}>
                 Action
@@ -436,30 +462,38 @@ const InvoiceForm: React.FC = () => {
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
               <Box sx={{ textAlign: 'right' }}>
                 <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333' }}>
-                  Subtotal: TK {calculateGrandTotal().toFixed(2)}
+                  Subtotal: {calculateSubtotal().toFixed(2)}
                 </Typography>
               </Box>
             </Box>
-            
-            {/* Grand Total */}
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
-              <Box sx={{ textAlign: 'right' }}>
-                <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#e74c3c' }}>
-                  Grand Total: TK {calculateGrandTotal().toFixed(2)}
-                </Typography>
-              </Box>
+
+            {/* VAT */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
+              <TextField
+                type="number"
+                label="VAT %"
+                value={invoiceData.vatPercentage}
+                onChange={(e) => handleInputChange('vatPercentage', parseFloat(e.target.value) || 0)}
+                size="small"
+                sx={{ width: '150px' }}
+                inputProps={{ min: 0, max: 100, step: 0.01 }}
+              />
+              <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333' }}>
+                VAT ({invoiceData.vatPercentage}%): TK {calculateVAT().toFixed(2)}
+              </Typography>
             </Box>
-            
-            {/* Amount in Words */}
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-              <Box sx={{ textAlign: 'right', p: 2, backgroundColor: '#f0f8ff', borderRadius: 1, border: '1px solid #e3f2fd', maxWidth: '400px' }}>
-                <Typography variant="body2" sx={{ color: '#666', marginBottom: 1 }}>
-                  Amount in Words:
-                </Typography>
-                <Typography variant="body1" sx={{ fontWeight: 'medium', fontStyle: 'italic' }}>
-                  {calculateGrandTotal() > 0 ? `${numberToWords(calculateGrandTotal())} taka only` : 'Zero taka only'}
-                </Typography>
-              </Box>
+
+            {/* Grand Total and Amount in Words */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
+              {/* Amount in Words - Left Side */}
+              <Typography variant="body1" sx={{ fontWeight: 'medium', fontStyle: 'italic' }}>
+                {calculateGrandTotal() > 0 ? `${numberToWords(calculateGrandTotal())} taka only` : 'Zero taka only'}
+              </Typography>
+
+              {/* Grand Total - Right Side */}
+              <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'rgb(26, 68, 160)' }}>
+                Total: TK {calculateGrandTotal().toFixed(2)}
+              </Typography>
             </Box>
           </Box>
         </Box>
@@ -468,7 +502,7 @@ const InvoiceForm: React.FC = () => {
 
         {/* Terms & Conditions Section */}
         <Box>
-          <Typography variant="h5" gutterBottom sx={{ color: '#e74c3c', fontWeight: 'bold' }}>
+          <Typography variant="h5" gutterBottom sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold' }}>
             Terms & Conditions
           </Typography>
           
@@ -488,113 +522,120 @@ const InvoiceForm: React.FC = () => {
 
         <Divider />
 
-        {/* Bank Details Section */}
+        {/* Signature and Bank Details Section - Side by Side */}
         <Box>
-          <Typography variant="h5" gutterBottom sx={{ color: '#e74c3c', fontWeight: 'bold' }}>
-            Bank Details
+          <Typography variant="h5" gutterBottom sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold' }}>
+            Signature & Bank Details
           </Typography>
-          
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <TextField
-              fullWidth
-              label="Bank Name"
-              value={invoiceData.bankDetails}
-              onChange={(e) => handleInputChange('bankDetails', e.target.value)}
-              placeholder="Enter bank name"
-              helperText="Bank where payments should be sent"
-            />
-            
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <TextField
-                fullWidth
-                label="Account Number"
-                value={invoiceData.accountNumber || ''}
-                onChange={(e) => handleInputChange('accountNumber', e.target.value)}
-                placeholder="Enter account number"
-              />
-              <TextField
-                fullWidth
-                label="Routing Number"
-                value={invoiceData.routingNumber || ''}
-                onChange={(e) => handleInputChange('routingNumber', e.target.value)}
-                placeholder="Enter routing number"
-              />
-            </Box>
-            
-            <TextField
-              fullWidth
-              label="Additional Bank Information"
-              multiline
-              rows={2}
-              value={invoiceData.additionalBankInfo || ''}
-              onChange={(e) => handleInputChange('additionalBankInfo', e.target.value)}
-              placeholder="SWIFT code, IBAN, or other payment details"
-              helperText="Optional: Add SWIFT code, IBAN, or other payment instructions"
-            />
-          </Box>
-        </Box>
 
-        <Divider />
-
-        {/* Signature Section */}
-        <Box>
-          <Typography variant="h5" gutterBottom sx={{ color: '#e74c3c', fontWeight: 'bold' }}>
-            Signature
-          </Typography>
-          
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {/* Signature Upload */}
-            <Box>
-              <Typography variant="subtitle1" gutterBottom>
-                Authorized Signature (PNG)
+          <Box sx={{ display: 'flex', gap: 3 }}>
+            {/* Left Side - Signature Section */}
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="h6" gutterBottom sx={{ color: '#666' }}>
+                Signature
               </Typography>
-              <Box sx={{ border: '2px dashed #ccc', p: 2, textAlign: 'center', borderRadius: 1 }}>
-                <input
-                  type="file"
-                  accept="image/png"
-                  onChange={handleSignatureUpload}
-                  style={{ display: 'none' }}
-                  id="signature-upload"
-                />
-                <label htmlFor="signature-upload">
-                  <Button variant="outlined" component="span" startIcon={<AddAPhoto />}>
-                    Upload Signature
-                  </Button>
-                </label>
-                {invoiceData.signature && (
-                  <Box mt={2}>
-                    <img
-                      src={invoiceData.signature}
-                      alt="Signature Preview"
-                      style={{ width: '150px', height: 'auto', border: '1px solid #eee' }}
+
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {/* Signature Upload */}
+                <Box>
+                  <Typography variant="subtitle1" gutterBottom>
+                    Authorized Signature (PNG)
+                  </Typography>
+                  <Box sx={{ border: '2px dashed #ccc', p: 2, textAlign: 'center', borderRadius: 1 }}>
+                    <input
+                      type="file"
+                      accept="image/png"
+                      onChange={handleSignatureUpload}
+                      style={{ display: 'none' }}
+                      id="signature-upload"
                     />
+                    <label htmlFor="signature-upload">
+                      <Button variant="outlined" component="span" startIcon={<AddAPhoto />}>
+                        Upload Signature
+                      </Button>
+                    </label>
+                    {invoiceData.signature && (
+                      <Box mt={2}>
+                        <img
+                          src={invoiceData.signature}
+                          alt="Signature Preview"
+                          style={{ width: '200px', height: 'auto', border: '1px solid #eee' }}
+                        />
+                      </Box>
+                    )}
                   </Box>
-                )}
+                  <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                    Upload a PNG signature image with transparent background
+                  </Typography>
+                </Box>
+
+                {/* Signature Name */}
+                <TextField
+                  fullWidth
+                  label="Signature Name"
+                  value={invoiceData.signatureName || ''}
+                  onChange={(e) => handleInputChange('signatureName', e.target.value)}
+                  placeholder="Enter signature holder's name"
+                  helperText="Name of the person signing the invoice"
+                />
+
+                {/* Signature Email */}
+                <TextField
+                  fullWidth
+                  label="Signature Email"
+                  value={invoiceData.signaturePhone || ''}
+                  onChange={(e) => handleInputChange('signaturePhone', e.target.value)}
+                  placeholder="Enter signature holder's email"
+                  helperText="Email address of the person signing the invoice"
+                />
               </Box>
-              <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
-                Upload a PNG signature image with transparent background
-              </Typography>
             </Box>
-            
-            {/* Signature Name */}
-            <TextField
-              fullWidth
-              label="Signature Name"
-              value={invoiceData.signatureName || ''}
-              onChange={(e) => handleInputChange('signatureName', e.target.value)}
-              placeholder="Enter signature holder's name"
-              helperText="Name of the person signing the invoice"
-            />
-            
-            {/* Signature Email */}
-            <TextField
-              fullWidth
-              label="Signature Email"
-              value={invoiceData.signaturePhone || ''}
-              onChange={(e) => handleInputChange('signaturePhone', e.target.value)}
-              placeholder="Enter signature holder's email"
-              helperText="Email address of the person signing the invoice"
-            />
+
+            {/* Right Side - Bank Details Section */}
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="h6" gutterBottom sx={{ color: '#666' }}>
+                Bank Details
+              </Typography>
+
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <TextField
+                  fullWidth
+                  label="Bank Name"
+                  value={invoiceData.bankDetails}
+                  onChange={(e) => handleInputChange('bankDetails', e.target.value)}
+                  placeholder="Enter bank name"
+                  helperText="Bank where payments should be sent"
+                />
+
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                  <TextField
+                    fullWidth
+                    label="Account Number"
+                    value={invoiceData.accountNumber || ''}
+                    onChange={(e) => handleInputChange('accountNumber', e.target.value)}
+                    placeholder="Enter account number"
+                  />
+                  <TextField
+                    fullWidth
+                    label="Routing Number"
+                    value={invoiceData.routingNumber || ''}
+                    onChange={(e) => handleInputChange('routingNumber', e.target.value)}
+                    placeholder="Enter routing number"
+                  />
+                </Box>
+
+                <TextField
+                  fullWidth
+                  label="Additional Bank Information"
+                  multiline
+                  rows={4}
+                  value={invoiceData.additionalBankInfo || ''}
+                  onChange={(e) => handleInputChange('additionalBankInfo', e.target.value)}
+                  placeholder="Account Name, SWIFT code, Branch, Address, etc."
+                  helperText="Add account name, SWIFT code, branch, and address"
+                />
+              </Box>
+            </Box>
           </Box>
         </Box>
 
@@ -602,7 +643,7 @@ const InvoiceForm: React.FC = () => {
 
         {/* Footer Section */}
         <Box>
-          <Typography variant="h5" gutterBottom sx={{ color: '#e74c3c', fontWeight: 'bold' }}>
+          <Typography variant="h5" gutterBottom sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold' }}>
             Footer Information
           </Typography>
           

@@ -15,32 +15,35 @@ interface InvoiceData {
   companyName: string;
   companyAddress: string;
   companyLogo?: string;
-  
+
   // Invoice Meta
   invoiceDate: string;
   invoiceNumber: string;
   dueDate: string;
-  
+
   // Buyer Information
   buyerCompany: string;
   buyerAddress: string;
   buyerContact: string;
-  
+
   // Items
   items: InvoiceItem[];
-  
+
+  // VAT
+  vatPercentage: number;
+
   // Terms and Payment
   terms: string;
   bankDetails: string;
   accountNumber?: string;
   routingNumber?: string;
   additionalBankInfo?: string;
-  
+
   // Signature
   signature?: string;
   signatureName?: string;
   signaturePhone?: string;
-  
+
   // Footer
   companyPhone?: string;
   companyFooterAddress?: string;
@@ -52,9 +55,25 @@ const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',
     backgroundColor: '#ffffff',
-    padding: 30,
+    paddingTop: 20,
+    paddingLeft: 30,
+    paddingRight: 30,
+    paddingBottom: 30,
     fontFamily: 'Helvetica',
     fontSize: 11,
+    position: 'relative',
+  },
+
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+    opacity: 0.1,
+    zIndex: -1,
   },
   
   // Header Section Styles
@@ -62,9 +81,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 25,
-    paddingBottom: 15,
-    borderBottom: '2 solid #e74c3c',
+    marginBottom: 15,
+    paddingBottom: 10,
+    borderBottom: '2 solid #1a44a0',
   },
   
   companyInfo: {
@@ -80,7 +99,7 @@ const styles = StyleSheet.create({
   companyName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#e74c3c',
+    color: '#1a44a0',
     marginBottom: 5,
   },
   
@@ -110,7 +129,7 @@ const styles = StyleSheet.create({
   invoiceNumber: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#e74c3c',
+    color: '#1a44a0',
     marginTop: 3,
   },
   
@@ -127,7 +146,7 @@ const styles = StyleSheet.create({
   buyerTitle: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#e74c3c',
+    color: '#1a44a0',
     marginBottom: 8,
   },
   
@@ -234,24 +253,37 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignItems: 'flex-end',
   },
-  
+
   subtotalLabel: {
     fontSize: 11,
     fontWeight: 'bold',
     color: '#333333',
     textAlign: 'right',
   },
-  
-  grandTotalSection: {
+
+  vatSection: {
     marginTop: 5,
     alignItems: 'flex-end',
   },
-  
+
+  vatLabel: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: '#333333',
+    textAlign: 'right',
+  },
+
+  grandTotalSection: {
+    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
   grandTotalLabel: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#e74c3c',
-    textAlign: 'right',
+    color: '#1a44a0',
   },
   
   // Terms & Conditions Section
@@ -262,7 +294,7 @@ const styles = StyleSheet.create({
   termsTitle: {
     fontSize: 11,
     fontWeight: 'bold',
-    color: '#e74c3c',
+    color: '#1a44a0',
     marginBottom: 8,
   },
   
@@ -272,19 +304,6 @@ const styles = StyleSheet.create({
     lineHeight: 1.4,
   },
   
-  amountInWordsBox: {
-    padding: 8,
-    border: '1 solid #e3f2fd',
-    backgroundColor: '#f8f9fa',
-    marginTop: 10,
-  },
-  
-  amountInWordsLabel: {
-    fontSize: 9,
-    color: '#666666',
-    marginBottom: 4,
-  },
-  
   amountInWordsValue: {
     fontSize: 9,
     fontWeight: 'medium',
@@ -292,69 +311,76 @@ const styles = StyleSheet.create({
     color: '#333333',
   },
   
-  // Bank Details Section
-  bankDetailsSection: {
+  // Signature and Bank Details Section - Side by Side
+  signatureAndBankSection: {
+    flexDirection: 'row',
     marginBottom: 10,
+    gap: 20,
   },
-  
+
+  // Left Column - Signature
+  signatureColumn: {
+    flex: 1,
+  },
+
+  signatureBox: {
+    alignItems: 'flex-start',
+    minHeight: 120,
+  },
+
+  // Right Column - Bank Details
+  bankDetailsColumn: {
+    flex: 1,
+  },
+
   bankDetailsTitle: {
     fontSize: 11,
     fontWeight: 'bold',
-    color: '#e74c3c',
+    color: '#1a44a0',
     marginBottom: 8,
   },
-  
+
   bankDetailsContent: {
-    padding: 8,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 5,
+    marginTop: 4,
   },
-  
+
   bankDetailsRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 4,
+    marginBottom: 2,
   },
-  
+
   bankDetailsLabel: {
     fontSize: 9,
     fontWeight: 'bold',
     color: '#333333',
-    flex: 1,
   },
-  
+
   bankDetailsValue: {
     fontSize: 9,
     color: '#333333',
-    flex: 2,
-    textAlign: 'right',
+    marginLeft: 4,
   },
-  
+
+  bankDetailsText: {
+    fontSize: 9,
+    color: '#333333',
+    lineHeight: 1.4,
+  },
+
   bankDetailsFullRow: {
-    marginBottom: 4,
-  },
-  
-  // Signature Section
-  signatureSection: {
-    marginBottom: 10,
-    alignItems: 'flex-end',
-  },
-  
-  signatureBox: {
-    alignItems: 'center',
-    minHeight: 80,
+    marginTop: 2,
   },
   
   signatureImage: {
     width: 80,
     height: 'auto',
-    marginBottom: 6,
+    marginBottom: 0,
   },
-  
+
   signatureLine: {
     borderTop: '1 solid #333333',
     width: 80,
-    marginTop: 3,
+    marginTop: 0,
   },
   
   signatureLabel: {
@@ -365,15 +391,15 @@ const styles = StyleSheet.create({
   },
   
   signatureName: {
-    fontSize: 8,
+    fontSize: 10,
     fontWeight: 'bold',
     color: '#333333',
     textAlign: 'center',
     marginTop: 2,
   },
-  
+
   signaturePhone: {
-    fontSize: 7,
+    fontSize: 9,
     color: '#666666',
     textAlign: 'center',
     marginTop: 1,
@@ -385,48 +411,112 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: 40,
-    backgroundColor: '#1a1a1a',
-  },
-  
-  footerContent: {
-    flexDirection: 'row',
-    height: 30,
+    height: 60,
     backgroundColor: '#2a2a2a',
   },
-  
+
+  footerContent: {
+    flexDirection: 'row',
+    height: 50,
+    position: 'relative',
+  },
+
+  // Left decorative section with angular design
+  footerLeftDecoration: {
+    width: '35%',
+    height: 50,
+    position: 'relative',
+  },
+
+  // Angular "K" shape design
+  footerVerticalLine1: {
+    position: 'absolute',
+    left: 40,
+    top: 5,
+    width: 3,
+    height: 20,
+    backgroundColor: '#1a44a0',
+  },
+
+  footerDiagonalLine1: {
+    position: 'absolute',
+    left: 43,
+    top: 12,
+    width: 25,
+    height: 3,
+    backgroundColor: '#1a44a0',
+    transform: 'rotate(-25deg)',
+  },
+
+  footerDiagonalLine2: {
+    position: 'absolute',
+    left: 43,
+    top: 18,
+    width: 30,
+    height: 3,
+    backgroundColor: '#1a44a0',
+    transform: 'rotate(35deg)',
+  },
+
+  // Middle script text area
+  footerMiddleText: {
+    position: 'absolute',
+    left: 90,
+    top: 12,
+    width: 80,
+    height: 25,
+  },
+
+  footerScriptText: {
+    fontSize: 16,
+    color: '#1a44a0',
+    fontWeight: 'bold',
+  },
+
+  // Right curved line decoration
+  footerRightCurve: {
+    position: 'absolute',
+    right: 40,
+    top: 20,
+    width: 60,
+    height: 3,
+    backgroundColor: '#1a44a0',
+    borderRadius: 2,
+  },
+
   footerBlueBar: {
     width: '30%',
-    backgroundColor: '#3498db',
-    height: 30,
+    backgroundColor: '#1a44a0',
+    height: 50,
   },
-  
+
   footerContactInfo: {
     flex: 1,
     backgroundColor: '#2a2a2a',
-    paddingLeft: 8,
-    paddingTop: 4,
-    height: 30,
+    paddingLeft: 12,
+    paddingTop: 8,
+    height: 50,
+    justifyContent: 'center',
   },
-  
+
   footerContactRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 2,
+    marginBottom: 4,
   },
-  
+
   footerIcon: {
     width: 4,
     height: 4,
     backgroundColor: '#ff6b35',
-    marginRight: 4,
+    marginRight: 6,
   },
-  
+
   footerText: {
-    fontSize: 6,
+    fontSize: 7,
     color: '#cccccc',
   },
-  
+
   footerBottomBar: {
     height: 10,
     backgroundColor: '#1a1a1a',
@@ -445,6 +535,9 @@ const InvoicePDF: React.FC<{ invoiceData: InvoiceData }> = ({ invoiceData }) => 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
+        {/* Background Image */}
+        <Image src="/image.png" style={styles.backgroundImage} fixed />
+
         {/* Header Section */}
         <View style={styles.header}>
           {/* Company Information */}
@@ -464,7 +557,6 @@ const InvoicePDF: React.FC<{ invoiceData: InvoiceData }> = ({ invoiceData }) => 
             <Text style={styles.invoiceTitle}>INVOICE</Text>
             <View style={styles.invoiceMeta}>
               <Text>Date: {invoiceData.invoiceDate}</Text>
-              <Text>Due Date: {invoiceData.dueDate}</Text>
               <Text style={styles.invoiceNumber}>#{invoiceData.invoiceNumber}</Text>
             </View>
           </View>
@@ -474,7 +566,7 @@ const InvoicePDF: React.FC<{ invoiceData: InvoiceData }> = ({ invoiceData }) => 
         <View style={styles.content}>
           {/* Buyer Details Section */}
           <View style={styles.buyerSection}>
-            <Text style={styles.buyerTitle}>Bill To:</Text>
+            <Text style={styles.buyerTitle}>To:</Text>
             <View style={styles.buyerInfo}>
               <Text style={styles.buyerCompany}>{invoiceData.buyerCompany}</Text>
               <Text style={styles.buyerAddress}>{invoiceData.buyerAddress}</Text>
@@ -491,12 +583,12 @@ const InvoicePDF: React.FC<{ invoiceData: InvoiceData }> = ({ invoiceData }) => 
               <View style={styles.itemsTableHeaderRow}>
                 <Text style={styles.itemsTableHeaderCell}>Description</Text>
                 <Text style={styles.itemsTableHeaderCellCenter}>Quantity</Text>
-                <Text style={styles.itemsTableHeaderCellRight}>Unit Price</Text>
-                <Text style={styles.itemsTableHeaderCellRight}>Total</Text>
+                <Text style={styles.itemsTableHeaderCellRight}>Unit Price (TK)</Text>
+                <Text style={styles.itemsTableHeaderCellRight}>Total (TK)</Text>
               </View>
               
               {/* Table Body */}
-              {invoiceData.items.map((item, index) => (
+              {invoiceData.items.map((item) => (
                 <View key={item.id} style={styles.itemsTableRow}>
                   <Text style={styles.itemsTableCell}>{item.description}</Text>
                   <Text style={styles.itemsTableCellCenter}>{item.quantity}</Text>
@@ -509,24 +601,38 @@ const InvoicePDF: React.FC<{ invoiceData: InvoiceData }> = ({ invoiceData }) => 
             {/* Subtotal */}
             <View style={styles.subtotalSection}>
               <Text style={styles.subtotalLabel}>
-                Subtotal: TK {invoiceData.items.reduce((total, item) => total + item.total, 0).toFixed(2)}
+                Subtotal: {invoiceData.items.reduce((total, item) => total + item.total, 0).toFixed(2)}
               </Text>
             </View>
-            
-            {/* Grand Total */}
+
+            {/* VAT */}
+            <View style={styles.vatSection}>
+              <Text style={styles.vatLabel}>
+                VAT ({invoiceData.vatPercentage}%): {(() => {
+                  const subtotal = invoiceData.items.reduce((total, item) => total + item.total, 0);
+                  return ((subtotal * invoiceData.vatPercentage) / 100).toFixed(2);
+                })()}
+              </Text>
+            </View>
+
+            {/* Grand Total and Amount in Words */}
             <View style={styles.grandTotalSection}>
-              <Text style={styles.grandTotalLabel}>
-                Grand Total: TK {invoiceData.items.reduce((total, item) => total + item.total, 0).toFixed(2)}
-              </Text>
-            </View>
-            
-            {/* Amount in Words */}
-            <View style={styles.amountInWordsBox}>
-              <Text style={styles.amountInWordsLabel}>Amount in Words:</Text>
+              {/* Amount in Words - Left Side */}
               <Text style={styles.amountInWordsValue}>
                 {(() => {
-                  const grandTotal = invoiceData.items.reduce((total, item) => total + item.total, 0);
+                  const subtotal = invoiceData.items.reduce((total, item) => total + item.total, 0);
+                  const vat = (subtotal * invoiceData.vatPercentage) / 100;
+                  const grandTotal = subtotal + vat;
                   return grandTotal > 0 ? `${numberToWords(grandTotal)} taka only` : 'Zero taka only';
+                })()}
+              </Text>
+
+              {/* Grand Total - Right Side */}
+              <Text style={styles.grandTotalLabel}>
+                Total: TK {(() => {
+                  const subtotal = invoiceData.items.reduce((total, item) => total + item.total, 0);
+                  const vat = (subtotal * invoiceData.vatPercentage) / 100;
+                  return (subtotal + vat).toFixed(2);
                 })()}
               </Text>
             </View>
@@ -538,55 +644,80 @@ const InvoicePDF: React.FC<{ invoiceData: InvoiceData }> = ({ invoiceData }) => 
             <Text style={styles.termsContent}>{invoiceData.terms}</Text>
           </View>
           
-          {/* Bank Details Section */}
-          <View style={styles.bankDetailsSection}>
-            <Text style={styles.bankDetailsTitle}>Bank Details</Text>
-            <View style={styles.bankDetailsContent}>
-              <View style={styles.bankDetailsRow}>
-                <Text style={styles.bankDetailsLabel}>Bank:</Text>
-                <Text style={styles.bankDetailsValue}>{invoiceData.bankDetails}</Text>
+          {/* Signature and Bank Details Section - Side by Side */}
+          <View style={styles.signatureAndBankSection}>
+            {/* Left Side - Signature Section */}
+            <View style={styles.signatureColumn}>
+              <View style={styles.signatureBox}>
+                {invoiceData.signature && (
+                  <Image src={invoiceData.signature} style={styles.signatureImage} />
+                )}
+                <View style={styles.signatureLine} />
+                {invoiceData.signatureName && (
+                  <Text style={styles.signatureName}>{invoiceData.signatureName}</Text>
+                )}
+                {invoiceData.signaturePhone && (
+                  <Text style={styles.signaturePhone}>{invoiceData.signaturePhone}</Text>
+                )}
               </View>
-              {invoiceData.accountNumber && (
-                <View style={styles.bankDetailsRow}>
-                  <Text style={styles.bankDetailsLabel}>Account:</Text>
-                  <Text style={styles.bankDetailsValue}>{invoiceData.accountNumber}</Text>
-                </View>
-              )}
-              {invoiceData.routingNumber && (
-                <View style={styles.bankDetailsRow}>
-                  <Text style={styles.bankDetailsLabel}>Routing:</Text>
-                  <Text style={styles.bankDetailsValue}>{invoiceData.routingNumber}</Text>
-                </View>
-              )}
-              {invoiceData.additionalBankInfo && (
-                <View style={styles.bankDetailsFullRow}>
-                  <Text style={styles.bankDetailsValue}>{invoiceData.additionalBankInfo}</Text>
-                </View>
-              )}
             </View>
-          </View>
-          
-          {/* Signature Section */}
-          <View style={styles.signatureSection}>
-            <View style={styles.signatureBox}>
-              {invoiceData.signature && (
-                <Image src={invoiceData.signature} style={styles.signatureImage} />
-              )}
-              <View style={styles.signatureLine} />
-              {invoiceData.signatureName && (
-                <Text style={styles.signatureName}>{invoiceData.signatureName}</Text>
-              )}
-              {invoiceData.signaturePhone && (
-                <Text style={styles.signaturePhone}>{invoiceData.signaturePhone}</Text>
-              )}
+
+            {/* Right Side - Bank Details Section */}
+            <View style={styles.bankDetailsColumn}>
+              <Text style={styles.bankDetailsTitle}>Bank Details</Text>
+              <View style={styles.bankDetailsContent}>
+                <View style={styles.bankDetailsRow}>
+                  <Text style={styles.bankDetailsLabel}>Bank Name:</Text>
+                  <Text style={styles.bankDetailsValue}>{invoiceData.bankDetails}</Text>
+                </View>
+                {invoiceData.accountNumber && (
+                  <View style={styles.bankDetailsRow}>
+                    <Text style={styles.bankDetailsLabel}>Account Number:</Text>
+                    <Text style={styles.bankDetailsValue}>{invoiceData.accountNumber}</Text>
+                  </View>
+                )}
+                {invoiceData.routingNumber && (
+                  <View style={styles.bankDetailsRow}>
+                    <Text style={styles.bankDetailsLabel}>Routing Number:</Text>
+                    <Text style={styles.bankDetailsValue}>{invoiceData.routingNumber}</Text>
+                  </View>
+                )}
+                {invoiceData.additionalBankInfo && (
+                  <View style={styles.bankDetailsFullRow}>
+                    {invoiceData.additionalBankInfo.split('\n').map((line, index) => {
+                      const parts = line.split(':');
+                      if (parts.length >= 2) {
+                        return (
+                          <View key={index} style={styles.bankDetailsRow}>
+                            <Text style={styles.bankDetailsLabel}>{parts[0]}:</Text>
+                            <Text style={styles.bankDetailsValue}>{parts.slice(1).join(':').trim()}</Text>
+                          </View>
+                        );
+                      }
+                      return <Text key={index} style={styles.bankDetailsText}>{line}</Text>;
+                    })}
+                  </View>
+                )}
+              </View>
             </View>
           </View>
         </View>
         
         {/* Footer Section */}
-        <View style={styles.footerSection}>
+        <View style={styles.footerSection} fixed>
           <View style={styles.footerContent}>
-            <View style={styles.footerBlueBar} />
+            {/* Left Decorative Design */}
+            <View style={styles.footerLeftDecoration}>
+              <View style={styles.footerVerticalLine1} />
+              <View style={styles.footerDiagonalLine1} />
+              <View style={styles.footerDiagonalLine2} />
+              <View style={styles.footerMiddleText}>
+                <Text style={styles.footerScriptText}>خرشد</Text>
+              </View>
+              <View style={styles.footerRightCurve} />
+            </View>
+
+            {/* Contact Info Section */}
             <View style={styles.footerContactInfo}>
               {invoiceData.companyPhone && (
                 <View style={styles.footerContactRow}>

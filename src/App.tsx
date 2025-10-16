@@ -7,7 +7,7 @@ import InvoiceForm from './components/InvoiceForm';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#e74c3c',
+      main: 'rgb(26, 68, 160)',
     },
     secondary: {
       main: '#3498db',
