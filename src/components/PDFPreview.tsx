@@ -67,14 +67,15 @@ const styles = StyleSheet.create({
 
   backgroundImage: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    width: '100%',
-    height: '100%',
-    opacity: 0.1,
+    top: '45%',
+    left: '50%',
+    width: 350,
+    height: 'auto',
+    opacity: 0.6,
     zIndex: -1,
+    objectFit: 'contain',
+    marginLeft: -175,
+    marginTop: '-15%',
   },
   
   // Header Section Styles
@@ -153,7 +154,7 @@ const styles = StyleSheet.create({
   
   buyerInfo: {
     padding: 10,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: 'rgba(248, 249, 250, 0.3)',
     borderRadius: 5,
   },
   
@@ -194,7 +195,7 @@ const styles = StyleSheet.create({
   
   itemsTableHeaderRow: {
     flexDirection: 'row',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: 'rgba(245, 245, 245, 0.3)',
     borderBottom: '2 solid #ddd',
     paddingVertical: 8,
   },
@@ -304,6 +305,21 @@ const styles = StyleSheet.create({
     color: '#333333',
     lineHeight: 1.4,
   },
+
+  termsLine: {
+    marginBottom: 2,
+  },
+
+  termsHeader: {
+    fontSize: 9,
+    fontWeight: 'bold',
+    color: '#333333',
+  },
+
+  termsText: {
+    fontSize: 9,
+    color: '#333333',
+  },
   
   amountInWordsValue: {
     fontSize: 9,
@@ -352,12 +368,12 @@ const styles = StyleSheet.create({
 
   bankDetailsLabel: {
     fontSize: 9,
-    fontWeight: 'bold',
     color: '#333333',
   },
 
   bankDetailsValue: {
     fontSize: 9,
+    fontWeight: 'bold',
     color: '#333333',
     marginLeft: 4,
   },
@@ -642,7 +658,22 @@ const PDFDocument: React.FC<{ invoiceData: InvoiceData }> = ({ invoiceData }) =>
           {/* Terms & Conditions Section */}
           <View style={styles.termsSection}>
             <Text style={styles.termsTitle}>Terms & Conditions</Text>
-            <Text style={styles.termsContent}>{invoiceData.terms}</Text>
+            <View>
+              {invoiceData.terms.split('\n').map((line, index) => {
+                const parts = line.split(':');
+                if (parts.length >= 2) {
+                  return (
+                    <View key={index} style={styles.termsLine}>
+                      <Text>
+                        <Text style={styles.termsHeader}>{parts[0]}:</Text>
+                        <Text style={styles.termsText}> {parts.slice(1).join(':').trim()}</Text>
+                      </Text>
+                    </View>
+                  );
+                }
+                return <Text key={index} style={styles.termsContent}>{line}</Text>;
+              })}
+            </View>
           </View>
           
           {/* Signature and Bank Details Section - Side by Side */}
