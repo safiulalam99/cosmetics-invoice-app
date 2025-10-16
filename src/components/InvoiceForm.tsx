@@ -90,7 +90,7 @@ const InvoiceForm: React.FC = () => {
     
     // Buyer Information
     buyerCompany: 'Army Pharma Ltd.',
-    buyerAddress: 'BMTF Ltd. Chotor, Shimultoli, Gazipur Sadar,\nPS: Gazipur-1700, Bangladesh',
+    buyerAddress: 'BMTF Ltd. Shimultoli, Joydevpur\nPS: Gazipur, Bangladesh',
     buyerContact: '',
     
     // Items
