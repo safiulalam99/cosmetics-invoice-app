@@ -123,6 +123,40 @@ const styles = StyleSheet.create({
     lineHeight: 1.6,
   },
 
+  paragraph: {
+    marginBottom: 12,
+    fontSize: 11,
+    color: '#333333',
+    lineHeight: 1.8,
+  },
+
+  bold: {
+    fontWeight: 'bold',
+  },
+
+  italic: {
+    fontStyle: 'italic',
+  },
+
+  underline: {
+    textDecoration: 'underline',
+  },
+
+  listItem: {
+    flexDirection: 'row',
+    marginBottom: 5,
+  },
+
+  listBullet: {
+    width: 20,
+    fontSize: 11,
+  },
+
+  listContent: {
+    flex: 1,
+    fontSize: 11,
+  },
+
   // Signature Section
   signatureSection: {
     marginTop: 30,
@@ -217,21 +251,126 @@ const styles = StyleSheet.create({
 });
 
 const LetterPDF: React.FC<{ letterData: LetterData }> = ({ letterData }) => {
-  // Convert HTML content to plain text paragraphs for PDF rendering
+  // Parse HTML and render with formatting
   const renderContent = () => {
-    // Remove HTML tags and convert to plain text
-    const plainText = letterData.content
-      .replace(/<br\s*\/?>/gi, '\n')
-      .replace(/<\/p>/gi, '\n\n')
-      .replace(/<[^>]+>/g, '')
-      .replace(/&nbsp;/g, ' ')
-      .trim();
+    if (!letterData.content || letterData.content.trim() === '') {
+      return <Text>No content</Text>;
+    }
 
-    return plainText.split('\n').map((line, index) => (
-      <Text key={index} style={{ marginBottom: line.trim() === '' ? 5 : 0 }}>
-        {line || ' '}
-      </Text>
-    ));
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(letterData.content, 'text/html');
+    const elements: any[] = [];
+
+    const processInlineNode = (node: ChildNode, baseStyles: any = {}): any => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const text = node.textContent || '';
+        return text ? <Text style={baseStyles}>{text}</Text> : null;
+      }
+
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        const element = node as Element;
+        const tagName = element.tagName.toLowerCase();
+        const children = Array.from(element.childNodes);
+        let newStyles = { ...baseStyles };
+
+        switch (tagName) {
+          case 'strong':
+          case 'b':
+            newStyles = { ...newStyles, fontWeight: 'bold' };
+            break;
+          case 'em':
+          case 'i':
+            newStyles = { ...newStyles, fontStyle: 'italic' };
+            break;
+          case 'u':
+            newStyles = { ...newStyles, textDecoration: 'underline' };
+            break;
+        }
+
+        if (tagName === 'br') {
+          return '\n';
+        }
+
+        return children.map((child, idx) => (
+          <React.Fragment key={idx}>{processInlineNode(child, newStyles)}</React.Fragment>
+        ));
+      }
+
+      return null;
+    };
+
+    const processBlockNode = (node: ChildNode, index: number): any => {
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        const element = node as Element;
+        const tagName = element.tagName.toLowerCase();
+
+        if (tagName === 'p') {
+          const children = Array.from(element.childNodes);
+          const isEmpty = element.textContent?.trim() === '';
+
+          return (
+            <View key={index} style={isEmpty ? { height: 12 } : styles.paragraph}>
+              {!isEmpty && (
+                <Text style={{ fontSize: 11, lineHeight: 1.8 }}>
+                  {children.map((child, idx) => (
+                    <React.Fragment key={idx}>{processInlineNode(child)}</React.Fragment>
+                  ))}
+                </Text>
+              )}
+            </View>
+          );
+        }
+
+        if (tagName === 'ul' || tagName === 'ol') {
+          const items = Array.from(element.querySelectorAll('li'));
+          return (
+            <View key={index} style={{ marginBottom: 12, marginLeft: 10 }}>
+              {items.map((li, idx) => (
+                <View key={idx} style={styles.listItem}>
+                  <Text style={styles.listBullet}>
+                    {tagName === 'ul' ? '•' : `${idx + 1}.`}
+                  </Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.listContent}>
+                      {Array.from(li.childNodes).map((child, i) => (
+                        <React.Fragment key={i}>{processInlineNode(child)}</React.Fragment>
+                      ))}
+                    </Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+          );
+        }
+
+        if (tagName === 'hr') {
+          return (
+            <View key={index} style={{ borderBottom: '1 solid #999', marginVertical: 12 }} />
+          );
+        }
+
+        if (tagName === 'h1' || tagName === 'h2' || tagName === 'h3') {
+          return (
+            <View key={index} style={{ marginBottom: 10, marginTop: 5 }}>
+              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>
+                {element.textContent}
+              </Text>
+            </View>
+          );
+        }
+      }
+
+      return null;
+    };
+
+    Array.from(doc.body.childNodes).forEach((node, index) => {
+      const result = processBlockNode(node, index);
+      if (result) {
+        elements.push(result);
+      }
+    });
+
+    return elements.length > 0 ? elements : <Text>No content</Text>;
   };
 
   return (
