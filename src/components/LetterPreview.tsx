@@ -12,6 +12,11 @@ interface LetterData {
   letterDate: string;
   subject?: string;
 
+  // Recipient Information (Optional)
+  recipientCompany?: string;
+  recipientAddress?: string;
+  recipientContact?: string;
+
   // Letter Content
   content: string;
 

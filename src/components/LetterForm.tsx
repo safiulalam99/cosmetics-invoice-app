@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Paper,
   TextField,
@@ -7,6 +7,8 @@ import {
   Box,
   Divider,
   CircularProgress,
+  FormControlLabel,
+  Checkbox,
 } from '@mui/material';
 import { Preview, PictureAsPdf } from '@mui/icons-material';
 import { useEditor, EditorContent } from '@tiptap/react';
@@ -27,6 +29,11 @@ interface LetterData {
   letterDate: string;
   subject?: string;
 
+  // Recipient Information (Optional)
+  recipientCompany?: string;
+  recipientAddress?: string;
+  recipientContact?: string;
+
   // Letter Content
   content: string;
 
@@ -41,31 +48,59 @@ interface LetterData {
 }
 
 const LetterForm: React.FC = () => {
-  const [letterData, setLetterData] = useState<LetterData>({
-    companyName: 'FR Cosmetics Ltd.',
-    companyAddress: 'Datiswar, Nangalkot, Cumilla, Bangladesh\nPhone: 01632211485, 01783321436, 01891598055',
-    companyLogo: '/company_logo.png',
+  // Load initial data from localStorage or use defaults
+  const getInitialData = (): LetterData => {
+    const saved = localStorage.getItem('letterFormData');
+    if (saved) {
+      return JSON.parse(saved);
+    }
 
-    letterDate: (() => {
-      const today = new Date();
-      const day = String(today.getDate()).padStart(2, '0');
-      const month = String(today.getMonth() + 1).padStart(2, '0');
-      const year = today.getFullYear();
-      return `${day}-${month}-${year}`;
-    })(),
-    subject: '',
-    content: '',
+    return {
+      companyName: 'FR Cosmetics Ltd.',
+      companyAddress: 'Datiswar, Nangalkot, Cumilla, Bangladesh\nPhone: 01632211485, 01783321436, 01891598055',
+      companyLogo: '/company_logo.png',
 
-    signature: '/signature.png',
-    signatureName: 'Md Khorshed Alam',
-    signaturePhone: 'frcosmetics25@gmail.com',
+      letterDate: (() => {
+        const today = new Date();
+        const day = String(today.getDate()).padStart(2, '0');
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const year = today.getFullYear();
+        return `${day}-${month}-${year}`;
+      })(),
+      subject: '',
 
-    companyPhone: '01632211485, 01783321436, 01891598055',
-    companyFooterAddress: 'Datiswar, Nangalkot, Cumilla, Bangladesh',
+      recipientCompany: 'Army Pharma Ltd.',
+      recipientAddress: 'BMTF Ltd. Chot, Shimultoli, Gazipur Sadar,\nPS: Gazipur-1700, Bangladesh',
+      recipientContact: '',
+
+      content: '',
+
+      signature: '/signature.png',
+      signatureName: 'Md Khorshed Alam',
+      signaturePhone: 'frcosmetics25@gmail.com',
+
+      companyPhone: '01632211485, 01783321436, 01891598055',
+      companyFooterAddress: 'Datiswar, Nangalkot, Cumilla, Bangladesh',
+    };
+  };
+
+  const [letterData, setLetterData] = useState<LetterData>(getInitialData());
+  const [showRecipient, setShowRecipient] = useState(() => {
+    const saved = localStorage.getItem('letterShowRecipient');
+    return saved ? JSON.parse(saved) : true;
   });
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [previewMode, setPreviewMode] = useState(false);
+
+  // Save to localStorage whenever data changes
+  useEffect(() => {
+    localStorage.setItem('letterFormData', JSON.stringify(letterData));
+  }, [letterData]);
+
+  useEffect(() => {
+    localStorage.setItem('letterShowRecipient', JSON.stringify(showRecipient));
+  }, [showRecipient]);
 
   const editor = useEditor({
     extensions: [
@@ -114,7 +149,14 @@ const LetterForm: React.FC = () => {
   const handleGeneratePDF = async () => {
     setIsGenerating(true);
     try {
-      const blob = await pdf(<LetterPDF letterData={letterData} />).toBlob();
+      // Only include recipient data if checkbox is checked
+      const pdfData = {
+        ...letterData,
+        recipientCompany: showRecipient ? letterData.recipientCompany : undefined,
+        recipientAddress: showRecipient ? letterData.recipientAddress : undefined,
+        recipientContact: showRecipient ? letterData.recipientContact : undefined,
+      };
+      const blob = await pdf(<LetterPDF letterData={pdfData} />).toBlob();
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -170,6 +212,57 @@ const LetterForm: React.FC = () => {
               helperText="Optional subject line or reference number"
             />
           </Box>
+        </Box>
+
+        <Divider />
+
+        {/* Recipient Information Section (Optional) */}
+        <Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+            <Typography variant="h5" sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold' }}>
+              Recipient Information
+            </Typography>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={showRecipient}
+                  onChange={(e) => setShowRecipient(e.target.checked)}
+                  sx={{ color: 'rgb(26, 68, 160)' }}
+                />
+              }
+              label="Include recipient section"
+            />
+          </Box>
+
+          {showRecipient && (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <TextField
+                fullWidth
+                label="Recipient Company Name"
+                value={letterData.recipientCompany || ''}
+                onChange={(e) => handleInputChange('recipientCompany', e.target.value)}
+                placeholder="Enter recipient company or person name"
+              />
+
+              <TextField
+                fullWidth
+                label="Recipient Address"
+                multiline
+                rows={3}
+                value={letterData.recipientAddress || ''}
+                onChange={(e) => handleInputChange('recipientAddress', e.target.value)}
+                placeholder="Enter recipient's complete address"
+              />
+
+              <TextField
+                fullWidth
+                label="Recipient Contact Information"
+                value={letterData.recipientContact || ''}
+                onChange={(e) => handleInputChange('recipientContact', e.target.value)}
+                placeholder="Phone, email, or other contact details"
+              />
+            </Box>
+          )}
         </Box>
 
         <Divider />
@@ -401,7 +494,12 @@ const LetterForm: React.FC = () => {
             <Typography variant="h6" gutterBottom>
               Letter Preview
             </Typography>
-            <LetterPreview letterData={letterData} />
+            <LetterPreview letterData={{
+              ...letterData,
+              recipientCompany: showRecipient ? letterData.recipientCompany : undefined,
+              recipientAddress: showRecipient ? letterData.recipientAddress : undefined,
+              recipientContact: showRecipient ? letterData.recipientContact : undefined,
+            }} />
           </Box>
         )}
       </Box>

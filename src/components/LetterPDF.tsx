@@ -11,6 +11,11 @@ interface LetterData {
   letterDate: string;
   subject?: string;
 
+  // Recipient Information (Optional)
+  recipientCompany?: string;
+  recipientAddress?: string;
+  recipientContact?: string;
+
   // Letter Content
   content: string;
 
@@ -97,6 +102,44 @@ const styles = StyleSheet.create({
   // Content Section
   content: {
     flex: 1,
+  },
+
+  // Recipient Section
+  recipientSection: {
+    marginBottom: 20,
+  },
+
+  recipientTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#1a44a0',
+    marginBottom: 8,
+  },
+
+  recipientInfo: {
+    padding: 10,
+    backgroundColor: 'rgba(248, 249, 250, 0.3)',
+    borderRadius: 5,
+  },
+
+  recipientCompany: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: '#333333',
+    marginBottom: 4,
+  },
+
+  recipientAddress: {
+    fontSize: 10,
+    color: '#666666',
+    lineHeight: 1.3,
+    marginBottom: 4,
+  },
+
+  recipientContact: {
+    fontSize: 10,
+    color: '#666666',
+    fontStyle: 'italic',
   },
 
   subjectSection: {
@@ -401,6 +444,22 @@ const LetterPDF: React.FC<{ letterData: LetterData }> = ({ letterData }) => {
 
         {/* Content Section */}
         <View style={styles.content}>
+          {/* Recipient Details Section (Optional) */}
+          {letterData.recipientCompany && (
+            <View style={styles.recipientSection}>
+              <Text style={styles.recipientTitle}>To:</Text>
+              <View style={styles.recipientInfo}>
+                <Text style={styles.recipientCompany}>{letterData.recipientCompany}</Text>
+                {letterData.recipientAddress && (
+                  <Text style={styles.recipientAddress}>{letterData.recipientAddress}</Text>
+                )}
+                {letterData.recipientContact && (
+                  <Text style={styles.recipientContact}>{letterData.recipientContact}</Text>
+                )}
+              </View>
+            </View>
+          )}
+
           {/* Subject Line */}
           {letterData.subject && (
             <View style={styles.subjectSection}>
