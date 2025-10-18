@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     left: '50%',
     width: 350,
     height: 'auto',
-    opacity: 0.08,
+    opacity: 0.4,
     zIndex: -1,
     objectFit: 'contain',
     marginLeft: -175,
