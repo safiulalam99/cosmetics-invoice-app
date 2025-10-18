@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',
     backgroundColor: '#ffffff',
-    paddingTop: 20,
+    paddingTop: 12,
     paddingLeft: 30,
     paddingRight: 30,
     paddingBottom: 30,
@@ -61,8 +61,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 15,
-    paddingBottom: 10,
+    marginBottom: 13,
+    paddingBottom: 9,
     borderBottom: '2 solid #1a44a0',
   },
 
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   companyLogo: {
     width: 250,
     height: 'auto',
-    marginBottom: 15,
+    marginBottom: 5,
   },
 
   companyName: {
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
 
   // Letter Body
   letterBody: {
-    marginBottom: 30,
+    marginBottom: 15,
     fontSize: 11,
     color: '#333333',
     lineHeight: 1.6,
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
 
   // Signature Section
   signatureSection: {
-    marginTop: 30,
+    marginTop: 15,
     marginBottom: 10,
   },
 
