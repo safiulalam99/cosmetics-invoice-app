@@ -46,6 +46,9 @@ interface InvoiceData {
   // VAT
   vatPercentage: number;
 
+  // Pre-payment
+  prePayment?: number;
+
   // Terms and Payment
   terms: string;
   bankDetails: string;
@@ -98,6 +101,9 @@ const InvoiceForm: React.FC = () => {
 
     // VAT
     vatPercentage: 15,
+
+    // Pre-payment
+    prePayment: 0,
 
     // Terms and Payment
     terms: '1. Terms of payment : Through Bank\n2. Payment Method : 50% Advance at time of order and rest 50% before delivery.\n3. Delivery Time : Normally 15 working days from approval\n4. Delivery Service : Free delivery within Dhaka City. The charge will be applicable for the delivery outside Dhaka.\n5. TAX : The above offer excluded all kinds of Govt. Duties, AIT, Vat &',
@@ -177,7 +183,9 @@ const InvoiceForm: React.FC = () => {
   };
 
   const calculateGrandTotal = () => {
-    return calculateSubtotal() + calculateVAT();
+    const total = calculateSubtotal() + calculateVAT();
+    const prePayment = invoiceData.prePayment || 0;
+    return total - prePayment;
   };
 
   const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -592,6 +600,25 @@ const InvoiceForm: React.FC = () => {
               <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333' }}>
                 VAT ({invoiceData.vatPercentage}%): TK {calculateVAT().toFixed(2)}
               </Typography>
+            </Box>
+
+            {/* Pre-payment (optional) */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
+              <TextField
+                type="number"
+                label="Pre-payment (Optional)"
+                value={invoiceData.prePayment || ''}
+                onChange={(e) => handleInputChange('prePayment', parseFloat(e.target.value) || 0)}
+                size="small"
+                sx={{ width: '150px' }}
+                inputProps={{ min: 0, step: 0.01 }}
+                placeholder="0.00"
+              />
+              {invoiceData.prePayment && invoiceData.prePayment > 0 && (
+                <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333' }}>
+                  Pre-payment: TK {invoiceData.prePayment.toFixed(2)}
+                </Typography>
+              )}
             </Box>
 
             {/* Grand Total and Amount in Words */}

@@ -32,6 +32,9 @@ interface InvoiceData {
   // VAT
   vatPercentage: number;
 
+  // Pre-payment
+  prePayment?: number;
+
   // Terms and Payment
   terms: string;
   bankDetails: string;
@@ -271,6 +274,18 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: 'bold',
     color: '#333333',
+    textAlign: 'right',
+  },
+
+  prePaymentSection: {
+    marginTop: 5,
+    alignItems: 'flex-end',
+  },
+
+  prePaymentLabel: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: '#2e7d32',
     textAlign: 'right',
   },
 
@@ -631,6 +646,15 @@ const InvoicePDF: React.FC<{ invoiceData: InvoiceData }> = ({ invoiceData }) => 
               </Text>
             </View>
 
+            {/* Pre-payment (only shown if value is provided) */}
+            {invoiceData.prePayment && invoiceData.prePayment > 0 && (
+              <View style={styles.prePaymentSection}>
+                <Text style={styles.prePaymentLabel}>
+                  Pre-payment: -{invoiceData.prePayment.toFixed(2)}
+                </Text>
+              </View>
+            )}
+
             {/* Grand Total and Amount in Words */}
             <View style={styles.grandTotalSection}>
               {/* Amount in Words - Left Side */}
@@ -638,7 +662,8 @@ const InvoicePDF: React.FC<{ invoiceData: InvoiceData }> = ({ invoiceData }) => 
                 In words: {(() => {
                   const subtotal = invoiceData.items.reduce((total, item) => total + item.total, 0);
                   const vat = (subtotal * invoiceData.vatPercentage) / 100;
-                  const grandTotal = subtotal + vat;
+                  const prePayment = invoiceData.prePayment || 0;
+                  const grandTotal = subtotal + vat - prePayment;
                   const words = grandTotal > 0 ? `${numberToWords(grandTotal)} taka only` : 'Zero taka only';
                   return words.charAt(0).toUpperCase() + words.slice(1);
                 })()}
@@ -649,7 +674,8 @@ const InvoicePDF: React.FC<{ invoiceData: InvoiceData }> = ({ invoiceData }) => 
                 Total: TK {(() => {
                   const subtotal = invoiceData.items.reduce((total, item) => total + item.total, 0);
                   const vat = (subtotal * invoiceData.vatPercentage) / 100;
-                  return (subtotal + vat).toFixed(2);
+                  const prePayment = invoiceData.prePayment || 0;
+                  return (subtotal + vat - prePayment).toFixed(2);
                 })()}
               </Text>
             </View>
