@@ -14,7 +14,7 @@ import { Preview, PictureAsPdf, AddAPhoto, ExpandMore, ExpandLess } from '@mui/i
 import { pdf } from '@react-pdf/renderer';
 import InvoicePDF from './InvoicePDF';
 import PDFPreview from './PDFPreview';
-import { numberToWords } from '../utils/numberToWords';
+import { numberToWords, formatIndianNumber } from '../utils/numberToWords';
 
 interface InvoiceItem {
   id: string;
@@ -516,37 +516,42 @@ const InvoiceForm: React.FC = () => {
                   size="small"
                 />
                 <TextField
-                  sx={{ 
+                  sx={{
                     flex: { xs: '0 0 15%', sm: 1 },
                     minWidth: '60px'
                   }}
                   type="number"
                   placeholder="Qty"
-                  value={item.quantity}
-                  onChange={(e) => handleItemChange(index, 'quantity', parseFloat(e.target.value) || 0)}
+                  value={item.quantity === 0 ? '' : item.quantity}
+                  onChange={(e) => {
+                    const value = e.target.value === '' ? 0 : Number(e.target.value);
+                    handleItemChange(index, 'quantity', isNaN(value) ? 0 : value);
+                  }}
                   size="small"
                   inputProps={{ min: 0, step: 0.01 }}
                 />
                 <TextField
-                  sx={{ 
+                  sx={{
                     flex: { xs: '0 0 20%', sm: 1 },
                     minWidth: '80px'
                   }}
                   type="number"
                   placeholder="Price"
-                  value={item.unitPrice}
-                  onChange={(e) => handleItemChange(index, 'unitPrice', parseFloat(e.target.value) || 0)}
+                  value={item.unitPrice === 0 ? '' : item.unitPrice}
+                  onChange={(e) => {
+                    const value = e.target.value === '' ? 0 : Number(e.target.value);
+                    handleItemChange(index, 'unitPrice', isNaN(value) ? 0 : value);
+                  }}
                   size="small"
                   inputProps={{ min: 0, step: 0.01 }}
                 />
                 <TextField
-                  sx={{ 
+                  sx={{
                     flex: { xs: '0 0 20%', sm: 1 },
                     minWidth: '80px'
                   }}
-                  type="number"
                   placeholder="Total"
-                  value={item.total.toFixed(2)}
+                  value={formatIndianNumber(item.total)}
                   size="small"
                   InputProps={{ readOnly: true }}
                 />
@@ -581,7 +586,7 @@ const InvoiceForm: React.FC = () => {
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
               <Box sx={{ textAlign: 'right' }}>
                 <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333' }}>
-                  Subtotal: {calculateSubtotal().toFixed(2)}
+                  Subtotal: {formatIndianNumber(calculateSubtotal())}
                 </Typography>
               </Box>
             </Box>
@@ -591,14 +596,17 @@ const InvoiceForm: React.FC = () => {
               <TextField
                 type="number"
                 label="VAT %"
-                value={invoiceData.vatPercentage}
-                onChange={(e) => handleInputChange('vatPercentage', parseFloat(e.target.value) || 0)}
+                value={invoiceData.vatPercentage === 0 ? '' : invoiceData.vatPercentage}
+                onChange={(e) => {
+                  const value = e.target.value === '' ? 0 : Number(e.target.value);
+                  handleInputChange('vatPercentage', isNaN(value) ? 0 : value);
+                }}
                 size="small"
                 sx={{ width: '150px' }}
                 inputProps={{ min: 0, max: 100, step: 0.01 }}
               />
               <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333' }}>
-                VAT ({invoiceData.vatPercentage}%): TK {calculateVAT().toFixed(2)}
+                VAT ({invoiceData.vatPercentage}%): TK {formatIndianNumber(calculateVAT())}
               </Typography>
             </Box>
 
@@ -608,7 +616,10 @@ const InvoiceForm: React.FC = () => {
                 type="number"
                 label="Pre-payment (Optional)"
                 value={invoiceData.prePayment || ''}
-                onChange={(e) => handleInputChange('prePayment', parseFloat(e.target.value) || 0)}
+                onChange={(e) => {
+                  const value = e.target.value === '' ? 0 : Number(e.target.value);
+                  handleInputChange('prePayment', isNaN(value) ? 0 : value);
+                }}
                 size="small"
                 sx={{ width: '150px' }}
                 inputProps={{ min: 0, step: 0.01 }}
@@ -616,7 +627,7 @@ const InvoiceForm: React.FC = () => {
               />
               {invoiceData.prePayment && invoiceData.prePayment > 0 && (
                 <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333' }}>
-                  Pre-payment: TK {invoiceData.prePayment.toFixed(2)}
+                  Pre-payment: TK {formatIndianNumber(invoiceData.prePayment)}
                 </Typography>
               )}
             </Box>
@@ -630,7 +641,7 @@ const InvoiceForm: React.FC = () => {
 
               {/* Grand Total - Right Side */}
               <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'rgb(26, 68, 160)' }}>
-                Total: TK {calculateGrandTotal().toFixed(2)}
+                Total: TK {formatIndianNumber(calculateGrandTotal())}
               </Typography>
             </Box>
           </Box>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
-import { numberToWords } from '../utils/numberToWords';
+import { numberToWords, formatIndianNumber } from '../utils/numberToWords';
 
 interface InvoiceItem {
   id: string;
@@ -623,8 +623,8 @@ const InvoicePDF: React.FC<{ invoiceData: InvoiceData }> = ({ invoiceData }) => 
                 <View key={item.id} style={styles.itemsTableRow}>
                   <Text style={styles.itemsTableCell}>{item.description}</Text>
                   <Text style={styles.itemsTableCellCenter}>{item.quantity}</Text>
-                  <Text style={styles.itemsTableCellRight}>{item.unitPrice.toFixed(2)}</Text>
-                  <Text style={styles.itemsTableCellRight}>{item.total.toFixed(2)}</Text>
+                  <Text style={styles.itemsTableCellRight}>{formatIndianNumber(item.unitPrice)}</Text>
+                  <Text style={styles.itemsTableCellRight}>{formatIndianNumber(item.total)}</Text>
                 </View>
               ))}
             </View>
@@ -632,7 +632,7 @@ const InvoicePDF: React.FC<{ invoiceData: InvoiceData }> = ({ invoiceData }) => 
             {/* Subtotal */}
             <View style={styles.subtotalSection}>
               <Text style={styles.subtotalLabel}>
-                Subtotal: {invoiceData.items.reduce((total, item) => total + item.total, 0).toFixed(2)}
+                Subtotal: {formatIndianNumber(invoiceData.items.reduce((total, item) => total + item.total, 0))}
               </Text>
             </View>
 
@@ -641,7 +641,7 @@ const InvoicePDF: React.FC<{ invoiceData: InvoiceData }> = ({ invoiceData }) => 
               <Text style={styles.vatLabel}>
                 VAT ({invoiceData.vatPercentage}%): {(() => {
                   const subtotal = invoiceData.items.reduce((total, item) => total + item.total, 0);
-                  return ((subtotal * invoiceData.vatPercentage) / 100).toFixed(2);
+                  return formatIndianNumber((subtotal * invoiceData.vatPercentage) / 100);
                 })()}
               </Text>
             </View>
@@ -650,7 +650,7 @@ const InvoicePDF: React.FC<{ invoiceData: InvoiceData }> = ({ invoiceData }) => 
             {invoiceData.prePayment && invoiceData.prePayment > 0 && (
               <View style={styles.prePaymentSection}>
                 <Text style={styles.prePaymentLabel}>
-                  Pre-payment: -{invoiceData.prePayment.toFixed(2)}
+                  Pre-payment: -{formatIndianNumber(invoiceData.prePayment)}
                 </Text>
               </View>
             )}
@@ -675,7 +675,7 @@ const InvoicePDF: React.FC<{ invoiceData: InvoiceData }> = ({ invoiceData }) => 
                   const subtotal = invoiceData.items.reduce((total, item) => total + item.total, 0);
                   const vat = (subtotal * invoiceData.vatPercentage) / 100;
                   const prePayment = invoiceData.prePayment || 0;
-                  return (subtotal + vat - prePayment).toFixed(2);
+                  return formatIndianNumber(subtotal + vat - prePayment);
                 })()}
               </Text>
             </View>
