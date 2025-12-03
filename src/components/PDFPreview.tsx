@@ -35,6 +35,7 @@ interface InvoiceData {
 
   // Pre-payment
   prePayment?: number;
+  prePaymentLabel?: string;
 
   // Terms and Payment
   terms: string;
@@ -651,7 +652,7 @@ const PDFDocument: React.FC<{ invoiceData: InvoiceData }> = ({ invoiceData }) =>
             {invoiceData.prePayment && invoiceData.prePayment > 0 && (
               <View style={styles.prePaymentSection}>
                 <Text style={styles.prePaymentLabel}>
-                  Pre-payment: -{formatIndianNumber(invoiceData.prePayment)}
+                  {invoiceData.prePaymentLabel || 'Pre-payment'}: {formatIndianNumber(invoiceData.prePayment)}
                 </Text>
               </View>
             )}

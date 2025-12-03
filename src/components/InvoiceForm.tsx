@@ -48,6 +48,7 @@ interface InvoiceData {
 
   // Pre-payment
   prePayment?: number;
+  prePaymentLabel?: string;
 
   // Terms and Payment
   terms: string;
@@ -104,6 +105,7 @@ const InvoiceForm: React.FC = () => {
 
     // Pre-payment
     prePayment: 0,
+    prePaymentLabel: 'Pre-payment',
 
     // Terms and Payment
     terms: '1. Terms of payment : Through Bank\n2. Payment Method : 50% Advance at time of order and rest 50% before delivery.\n3. Delivery Time : Normally 15 working days from approval\n4. Delivery Service : Free delivery within Dhaka City. The charge will be applicable for the delivery outside Dhaka.\n5. TAX : The above offer excluded all kinds of Govt. Duties, AIT, Vat &',
@@ -611,24 +613,37 @@ const InvoiceForm: React.FC = () => {
             </Box>
 
             {/* Pre-payment (optional) */}
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
-              <TextField
-                type="number"
-                label="Pre-payment (Optional)"
-                value={invoiceData.prePayment || ''}
-                onChange={(e) => {
-                  const value = e.target.value === '' ? 0 : Number(e.target.value);
-                  handleInputChange('prePayment', isNaN(value) ? 0 : value);
-                }}
-                size="small"
-                sx={{ width: '150px' }}
-                inputProps={{ min: 0, step: 0.01 }}
-                placeholder="0.00"
-              />
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 1 }}>
+              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                <TextField
+                  label="Pre-payment Label"
+                  value={invoiceData.prePaymentLabel || ''}
+                  onChange={(e) => handleInputChange('prePaymentLabel', e.target.value)}
+                  size="small"
+                  sx={{ width: '200px' }}
+                  placeholder="e.g., Advance Payment, Down Payment"
+                  helperText="Customize the label shown in PDF"
+                />
+                <TextField
+                  type="number"
+                  label="Pre-payment Amount (Optional)"
+                  value={invoiceData.prePayment || ''}
+                  onChange={(e) => {
+                    const value = e.target.value === '' ? 0 : Number(e.target.value);
+                    handleInputChange('prePayment', isNaN(value) ? 0 : value);
+                  }}
+                  size="small"
+                  sx={{ width: '200px' }}
+                  inputProps={{ min: 0, step: 0.01 }}
+                  placeholder="0.00"
+                />
+              </Box>
               {invoiceData.prePayment && invoiceData.prePayment > 0 && (
-                <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333' }}>
-                  Pre-payment: TK {formatIndianNumber(invoiceData.prePayment)}
-                </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333' }}>
+                    {invoiceData.prePaymentLabel || 'Pre-payment'}: TK {formatIndianNumber(invoiceData.prePayment)}
+                  </Typography>
+                </Box>
               )}
             </Box>
 
