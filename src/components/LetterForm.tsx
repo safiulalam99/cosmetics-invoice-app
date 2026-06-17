@@ -54,16 +54,25 @@ interface LetterFormProps {
 const LetterForm: React.FC<LetterFormProps> = ({ mode = 'letter' }) => {
   const storagePrefix = mode === 'letterhead' ? 'letterhead' : 'letter';
 
+  const OLD_PHONES = '01632211485, 01783321436, 01891598055';
+  const NEW_PHONES = '01711949751, 01821329499';
+
   // Load initial data from localStorage or use defaults
   const getInitialData = (): LetterData => {
     const saved = localStorage.getItem(`${storagePrefix}FormData`);
     if (saved) {
-      return JSON.parse(saved);
+      const parsed = JSON.parse(saved);
+      // Migrate old phone numbers
+      if (parsed.companyPhone === OLD_PHONES) parsed.companyPhone = NEW_PHONES;
+      if (parsed.companyAddress?.includes(OLD_PHONES)) {
+        parsed.companyAddress = parsed.companyAddress.replace(OLD_PHONES, NEW_PHONES);
+      }
+      return parsed;
     }
 
     return {
       companyName: 'FR Cosmetics Ltd.',
-      companyAddress: 'Datiswar, Nangalkot, Cumilla, Bangladesh\nPhone: 01632211485, 01783321436, 01891598055',
+      companyAddress: 'Datiswar, Nangalkot, Cumilla, Bangladesh\nPhone: 01711949751, 01821329499',
       companyLogo: '/company_logo.png',
 
       letterDate: (() => {
@@ -85,7 +94,7 @@ const LetterForm: React.FC<LetterFormProps> = ({ mode = 'letter' }) => {
       signatureName: 'Md Khorshed Alam',
       signaturePhone: 'frcosmetics25@gmail.com',
 
-      companyPhone: '01632211485, 01783321436, 01891598055',
+      companyPhone: '01711949751, 01821329499',
       companyFooterAddress: 'Datiswar, Nangalkot, Cumilla, Bangladesh',
     };
   };
@@ -169,7 +178,7 @@ const LetterForm: React.FC<LetterFormProps> = ({ mode = 'letter' }) => {
         signatureName: showSignature ? letterData.signatureName : undefined,
         signaturePhone: showSignature ? letterData.signaturePhone : undefined,
       };
-      const blob = await pdf(<LetterPDF letterData={pdfData} />).toBlob();
+      const blob = await pdf(<LetterPDF letterData={pdfData} mode={mode} />).toBlob();
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;

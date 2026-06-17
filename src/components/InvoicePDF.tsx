@@ -87,8 +87,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     marginBottom: 15,
-    paddingBottom: 10,
-    borderBottom: '2 solid #1a44a0',
   },
   
   companyInfo: {
@@ -580,8 +578,6 @@ const InvoicePDF: React.FC<{ invoiceData: InvoiceData }> = ({ invoiceData }) => 
                 style={styles.companyLogo}
               />
             )}
-            <Text style={styles.companyName}>{invoiceData.companyName}</Text>
-            <Text style={styles.companyAddress}>{invoiceData.companyAddress}</Text>
           </View>
           
           {/* Invoice Information */}

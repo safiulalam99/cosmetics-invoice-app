@@ -62,6 +62,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     marginBottom: 13,
+  },
+
+  headerWithBorder: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 13,
     paddingBottom: 9,
     borderBottom: '2 solid #1a44a0',
   },
@@ -293,7 +300,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const LetterPDF: React.FC<{ letterData: LetterData }> = ({ letterData }) => {
+const LetterPDF: React.FC<{ letterData: LetterData; mode?: 'letter' | 'letterhead' }> = ({ letterData, mode }) => {
   // Parse HTML and render with formatting
   const renderContent = () => {
     if (!letterData.content || letterData.content.trim() === '') {
@@ -423,7 +430,7 @@ const LetterPDF: React.FC<{ letterData: LetterData }> = ({ letterData }) => {
         <Image src="/image.png" style={styles.backgroundImage} fixed />
 
         {/* Header Section */}
-        <View style={styles.header}>
+        <View style={mode === 'letter' ? styles.headerWithBorder : styles.header}>
           {/* Company Information */}
           <View style={styles.companyInfo}>
             {letterData.companyLogo && (
@@ -432,8 +439,12 @@ const LetterPDF: React.FC<{ letterData: LetterData }> = ({ letterData }) => {
                 style={styles.companyLogo}
               />
             )}
-            <Text style={styles.companyName}>{letterData.companyName}</Text>
-            <Text style={styles.companyAddress}>{letterData.companyAddress}</Text>
+            {mode === 'letter' && (
+              <>
+                <Text style={styles.companyName}>{letterData.companyName}</Text>
+                <Text style={styles.companyAddress}>{letterData.companyAddress}</Text>
+              </>
+            )}
           </View>
 
           {/* Letter Date */}

@@ -72,7 +72,7 @@ const InvoiceForm: React.FC = () => {
   const [invoiceData, setInvoiceData] = useState<InvoiceData>({
     // Company Information
     companyName: 'FR Cosmetics Ltd.',
-    companyAddress: 'Datiswar, Nangalkot, Cumilla, Bangladesh\nPhone: 01632211485, 01783321436, 01891598055',
+    companyAddress: 'Datiswar, Nangalkot, Cumilla, Bangladesh\nPhone: 01711949751, 01821329499',
     companyLogo: '/company_logo.png',
     
     // Invoice Meta
@@ -120,7 +120,7 @@ const InvoiceForm: React.FC = () => {
     signaturePhone: 'frcosmetics25@gmail.com',
     
     // Footer
-    companyPhone: '01632211485, 01783321436, 01891598055',
+    companyPhone: '01711949751, 01821329499',
     companyFooterAddress: 'Datiswar, Nangalkot, Cumilla, Bangladesh',
   });
 
