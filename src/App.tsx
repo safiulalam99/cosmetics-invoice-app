@@ -44,12 +44,14 @@ function App() {
           <Tabs value={activeTab} onChange={handleTabChange} centered>
             <Tab label="Invoice Generator" />
             <Tab label="Letter Generator" />
+            <Tab label="Letterhead" />
           </Tabs>
         </Box>
 
         {/* Content based on active tab */}
         {activeTab === 0 && <InvoiceForm />}
-        {activeTab === 1 && <LetterForm />}
+        {activeTab === 1 && <LetterForm mode="letter" />}
+        {activeTab === 2 && <LetterForm mode="letterhead" />}
       </Container>
     </ThemeProvider>
   );

@@ -9,7 +9,7 @@ interface LetterData {
   companyLogo?: string;
 
   // Letter Meta
-  letterDate: string;
+  letterDate?: string;
   subject?: string;
 
   // Recipient Information (Optional)

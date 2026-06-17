@@ -26,7 +26,7 @@ interface LetterData {
   companyLogo?: string;
 
   // Letter Meta
-  letterDate: string;
+  letterDate?: string;
   subject?: string;
 
   // Recipient Information (Optional)
@@ -47,10 +47,16 @@ interface LetterData {
   companyFooterAddress?: string;
 }
 
-const LetterForm: React.FC = () => {
+interface LetterFormProps {
+  mode?: 'letter' | 'letterhead';
+}
+
+const LetterForm: React.FC<LetterFormProps> = ({ mode = 'letter' }) => {
+  const storagePrefix = mode === 'letterhead' ? 'letterhead' : 'letter';
+
   // Load initial data from localStorage or use defaults
   const getInitialData = (): LetterData => {
-    const saved = localStorage.getItem('letterFormData');
+    const saved = localStorage.getItem(`${storagePrefix}FormData`);
     if (saved) {
       return JSON.parse(saved);
     }
@@ -86,8 +92,16 @@ const LetterForm: React.FC = () => {
 
   const [letterData, setLetterData] = useState<LetterData>(getInitialData());
   const [showRecipient, setShowRecipient] = useState(() => {
-    const saved = localStorage.getItem('letterShowRecipient');
-    return saved ? JSON.parse(saved) : true;
+    const saved = localStorage.getItem(`${storagePrefix}ShowRecipient`);
+    return saved ? JSON.parse(saved) : mode === 'letter';
+  });
+  const [showDate, setShowDate] = useState(() => {
+    const saved = localStorage.getItem(`${storagePrefix}ShowDate`);
+    return saved ? JSON.parse(saved) : mode === 'letter';
+  });
+  const [showSignature, setShowSignature] = useState(() => {
+    const saved = localStorage.getItem(`${storagePrefix}ShowSignature`);
+    return saved ? JSON.parse(saved) : mode === 'letter';
   });
 
   const [isGenerating, setIsGenerating] = useState(false);
@@ -95,12 +109,20 @@ const LetterForm: React.FC = () => {
 
   // Save to localStorage whenever data changes
   useEffect(() => {
-    localStorage.setItem('letterFormData', JSON.stringify(letterData));
-  }, [letterData]);
+    localStorage.setItem(`${storagePrefix}FormData`, JSON.stringify(letterData));
+  }, [letterData, storagePrefix]);
 
   useEffect(() => {
-    localStorage.setItem('letterShowRecipient', JSON.stringify(showRecipient));
-  }, [showRecipient]);
+    localStorage.setItem(`${storagePrefix}ShowRecipient`, JSON.stringify(showRecipient));
+  }, [showRecipient, storagePrefix]);
+
+  useEffect(() => {
+    localStorage.setItem(`${storagePrefix}ShowDate`, JSON.stringify(showDate));
+  }, [showDate, storagePrefix]);
+
+  useEffect(() => {
+    localStorage.setItem(`${storagePrefix}ShowSignature`, JSON.stringify(showSignature));
+  }, [showSignature, storagePrefix]);
 
   const editor = useEditor({
     extensions: [
@@ -118,19 +140,6 @@ const LetterForm: React.FC = () => {
 
   const handleInputChange = (field: keyof LetterData, value: any) => {
     setLetterData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && file.type === 'image/png') {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setLetterData(prev => ({ ...prev, companyLogo: e.target?.result as string }));
-      };
-      reader.readAsDataURL(file);
-    } else {
-      alert('Please select a PNG image file for the logo.');
-    }
   };
 
   const handleSignatureUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -152,15 +161,19 @@ const LetterForm: React.FC = () => {
       // Only include recipient data if checkbox is checked
       const pdfData = {
         ...letterData,
+        letterDate: showDate ? letterData.letterDate : undefined,
         recipientCompany: showRecipient ? letterData.recipientCompany : undefined,
         recipientAddress: showRecipient ? letterData.recipientAddress : undefined,
         recipientContact: showRecipient ? letterData.recipientContact : undefined,
+        signature: showSignature ? letterData.signature : undefined,
+        signatureName: showSignature ? letterData.signatureName : undefined,
+        signaturePhone: showSignature ? letterData.signaturePhone : undefined,
       };
       const blob = await pdf(<LetterPDF letterData={pdfData} />).toBlob();
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `Letter-${letterData.letterDate}.pdf`;
+      link.download = `${mode === 'letterhead' ? 'Letterhead' : 'Letter'}-${letterData.letterDate || 'document'}.pdf`;
       link.click();
       URL.revokeObjectURL(url);
     } catch (error) {
@@ -182,26 +195,39 @@ const LetterForm: React.FC = () => {
   return (
     <Paper elevation={3} sx={{ p: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Letter Generator
+        {mode === 'letterhead' ? 'Letterhead Generator' : 'Letter Generator'}
       </Typography>
 
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
         {/* Letter Information Section */}
         <Box>
-          <Typography variant="h5" gutterBottom sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold' }}>
-            Letter Information
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+            <Typography variant="h5" sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold' }}>
+              Letter Information
+            </Typography>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={showDate}
+                  onChange={(e) => setShowDate(e.target.checked)}
+                  sx={{ color: 'rgb(26, 68, 160)' }}
+                />
+              }
+              label="Include date"
+            />
+          </Box>
 
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <TextField
-              fullWidth
-              label="Letter Date"
-              value={letterData.letterDate}
-              onChange={(e) => handleInputChange('letterDate', e.target.value)}
-              required
-              placeholder="dd-mm-yyyy"
-              helperText="Format: dd-mm-yyyy (e.g., 18-10-2025)"
-            />
+            {showDate && (
+              <TextField
+                fullWidth
+                label="Letter Date"
+                value={letterData.letterDate || ''}
+                onChange={(e) => handleInputChange('letterDate', e.target.value)}
+                placeholder="dd-mm-yyyy"
+                helperText="Format: dd-mm-yyyy (e.g., 18-10-2025)"
+              />
+            )}
 
             <TextField
               fullWidth
@@ -410,56 +436,70 @@ const LetterForm: React.FC = () => {
 
         {/* Signature Section */}
         <Box>
-          <Typography variant="h5" gutterBottom sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold' }}>
-            Signature
-          </Typography>
-
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Box>
-              <Typography variant="subtitle1" gutterBottom>
-                Authorized Signature (PNG)
-              </Typography>
-              <Box sx={{ border: '2px dashed #ccc', p: 2, textAlign: 'center', borderRadius: 1 }}>
-                <input
-                  type="file"
-                  accept="image/png"
-                  onChange={handleSignatureUpload}
-                  style={{ display: 'none' }}
-                  id="letter-signature-upload"
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+            <Typography variant="h5" sx={{ color: 'rgb(26, 68, 160)', fontWeight: 'bold' }}>
+              Signature
+            </Typography>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={showSignature}
+                  onChange={(e) => setShowSignature(e.target.checked)}
+                  sx={{ color: 'rgb(26, 68, 160)' }}
                 />
-                <label htmlFor="letter-signature-upload">
-                  <Button variant="outlined" component="span">
-                    Upload Signature
-                  </Button>
-                </label>
-                {letterData.signature && (
-                  <Box mt={2}>
-                    <img
-                      src={letterData.signature}
-                      alt="Signature Preview"
-                      style={{ width: '200px', height: 'auto', border: '1px solid #eee' }}
-                    />
-                  </Box>
-                )}
-              </Box>
-            </Box>
-
-            <TextField
-              fullWidth
-              label="Signature Name"
-              value={letterData.signatureName || ''}
-              onChange={(e) => handleInputChange('signatureName', e.target.value)}
-              placeholder="Enter signature holder's name"
-            />
-
-            <TextField
-              fullWidth
-              label="Signature Email"
-              value={letterData.signaturePhone || ''}
-              onChange={(e) => handleInputChange('signaturePhone', e.target.value)}
-              placeholder="Enter signature holder's email"
+              }
+              label="Include signature"
             />
           </Box>
+
+          {showSignature && (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Box>
+                <Typography variant="subtitle1" gutterBottom>
+                  Authorized Signature (PNG)
+                </Typography>
+                <Box sx={{ border: '2px dashed #ccc', p: 2, textAlign: 'center', borderRadius: 1 }}>
+                  <input
+                    type="file"
+                    accept="image/png"
+                    onChange={handleSignatureUpload}
+                    style={{ display: 'none' }}
+                    id="letter-signature-upload"
+                  />
+                  <label htmlFor="letter-signature-upload">
+                    <Button variant="outlined" component="span">
+                      Upload Signature
+                    </Button>
+                  </label>
+                  {letterData.signature && (
+                    <Box mt={2}>
+                      <img
+                        src={letterData.signature}
+                        alt="Signature Preview"
+                        style={{ width: '200px', height: 'auto', border: '1px solid #eee' }}
+                      />
+                    </Box>
+                  )}
+                </Box>
+              </Box>
+
+              <TextField
+                fullWidth
+                label="Signature Name"
+                value={letterData.signatureName || ''}
+                onChange={(e) => handleInputChange('signatureName', e.target.value)}
+                placeholder="Enter signature holder's name"
+              />
+
+              <TextField
+                fullWidth
+                label="Signature Email"
+                value={letterData.signaturePhone || ''}
+                onChange={(e) => handleInputChange('signaturePhone', e.target.value)}
+                placeholder="Enter signature holder's email"
+              />
+            </Box>
+          )}
         </Box>
 
         <Divider />
@@ -473,7 +513,7 @@ const LetterForm: React.FC = () => {
               onClick={handlePreview}
               size="large"
             >
-              {previewMode ? 'Hide Preview' : 'Preview Letter'}
+              {previewMode ? 'Hide Preview' : mode === 'letterhead' ? 'Preview Letterhead' : 'Preview Letter'}
             </Button>
             <Button
               variant="contained"
@@ -492,13 +532,17 @@ const LetterForm: React.FC = () => {
           <Box>
             <Divider sx={{ my: 2 }} />
             <Typography variant="h6" gutterBottom>
-              Letter Preview
+              {mode === 'letterhead' ? 'Letterhead Preview' : 'Letter Preview'}
             </Typography>
             <LetterPreview letterData={{
               ...letterData,
+              letterDate: showDate ? letterData.letterDate : undefined,
               recipientCompany: showRecipient ? letterData.recipientCompany : undefined,
               recipientAddress: showRecipient ? letterData.recipientAddress : undefined,
               recipientContact: showRecipient ? letterData.recipientContact : undefined,
+              signature: showSignature ? letterData.signature : undefined,
+              signatureName: showSignature ? letterData.signatureName : undefined,
+              signaturePhone: showSignature ? letterData.signaturePhone : undefined,
             }} />
           </Box>
         )}

@@ -8,7 +8,7 @@ interface LetterData {
   companyLogo?: string;
 
   // Letter Meta
-  letterDate: string;
+  letterDate?: string;
   subject?: string;
 
   // Recipient Information (Optional)
@@ -297,7 +297,7 @@ const LetterPDF: React.FC<{ letterData: LetterData }> = ({ letterData }) => {
   // Parse HTML and render with formatting
   const renderContent = () => {
     if (!letterData.content || letterData.content.trim() === '') {
-      return <Text>No content</Text>;
+      return null;
     }
 
     const parser = new DOMParser();
@@ -413,7 +413,7 @@ const LetterPDF: React.FC<{ letterData: LetterData }> = ({ letterData }) => {
       }
     });
 
-    return elements.length > 0 ? elements : <Text>No content</Text>;
+    return elements.length > 0 ? elements : null;
   };
 
   return (
@@ -437,9 +437,11 @@ const LetterPDF: React.FC<{ letterData: LetterData }> = ({ letterData }) => {
           </View>
 
           {/* Letter Date */}
-          <View style={styles.letterInfo}>
-            <Text style={styles.letterDate}>Date: {letterData.letterDate}</Text>
-          </View>
+          {letterData.letterDate && (
+            <View style={styles.letterInfo}>
+              <Text style={styles.letterDate}>Date: {letterData.letterDate}</Text>
+            </View>
+          )}
         </View>
 
         {/* Content Section */}
@@ -474,20 +476,22 @@ const LetterPDF: React.FC<{ letterData: LetterData }> = ({ letterData }) => {
           </View>
 
           {/* Signature Section */}
-          <View style={styles.signatureSection}>
-            <View style={styles.signatureBox}>
-              {letterData.signature && (
-                <Image src={letterData.signature} style={styles.signatureImage} />
-              )}
-              <View style={styles.signatureLine} />
-              {letterData.signatureName && (
-                <Text style={styles.signatureName}>{letterData.signatureName}</Text>
-              )}
-              {letterData.signaturePhone && (
-                <Text style={styles.signaturePhone}>{letterData.signaturePhone}</Text>
-              )}
+          {(letterData.signature || letterData.signatureName || letterData.signaturePhone) && (
+            <View style={styles.signatureSection}>
+              <View style={styles.signatureBox}>
+                {letterData.signature && (
+                  <Image src={letterData.signature} style={styles.signatureImage} />
+                )}
+                <View style={styles.signatureLine} />
+                {letterData.signatureName && (
+                  <Text style={styles.signatureName}>{letterData.signatureName}</Text>
+                )}
+                {letterData.signaturePhone && (
+                  <Text style={styles.signaturePhone}>{letterData.signaturePhone}</Text>
+                )}
+              </View>
             </View>
-          </View>
+          )}
         </View>
 
         {/* Footer Section */}
